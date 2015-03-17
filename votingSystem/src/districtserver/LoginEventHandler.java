@@ -1,4 +1,4 @@
-package server;
+package districtserver;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +16,7 @@ public class LoginEventHandler implements EventHandler {
 
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
-		ConcurrentHashMap<String, String> users = ((Server) connection
+		ConcurrentHashMap<String, String> users = ((DistrictServer) connection
 				.getService()).getUsers();
 
 		String username = (String) e.get("username");

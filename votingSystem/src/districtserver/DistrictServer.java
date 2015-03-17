@@ -1,35 +1,32 @@
-package server;
+package districtserver;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import common.Acceptor;
-import common.Address;
+import servercommon.Server;
 import common.Connection;
+import common.Connector;
 import common.Service;
 
-public class Server extends Service {
+public class DistrictServer extends Server {
 
-	private static String DEFAULT_cfgFILE = "votingSystem/src/server/server.cfg";
-	private static int PORT = 9090;
-	private Acceptor acceptor;
-
-	private ConcurrentHashMap<Address, Connection> connections;
 	private ConcurrentHashMap<String, String> users;
+	private static int MAIN_SERVER_PORT = 9090;
+	private Connector connector;
+	private Connection mainConnection;
 
-	public Server(String file) {
-		super(file);
-
-		this.acceptor = new Acceptor(PORT, this);
-
-		this.connections = new ConcurrentHashMap<Address, Connection>();
+	public DistrictServer(String file) {
+		super(file, 9090);
+		
+		connector = new Connector(this);
+		
 		this.users = new ConcurrentHashMap<String, String>();
 	}
 
 	public static void main(String[] args) {
 
 		// Default in case no args
-		String cfgFile = DEFAULT_cfgFILE;
+		String cfgFile = "votingSystem/src/server/server.cfg";
 
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-c")) {
@@ -38,7 +35,7 @@ public class Server extends Service {
 		}
 
 		// Create and start Server
-		Server server = new Server(cfgFile);
+		DistrictServer server = new DistrictServer(cfgFile);
 		server.run();
 	}
 
@@ -50,10 +47,6 @@ public class Server extends Service {
 		} catch (IOException e) {
 			Service.logError("Server Connection Error");
 		}
-	}
-
-	public ConcurrentHashMap<Address, Connection> getConnections() {
-		return connections;
 	}
 	
 	public ConcurrentHashMap<String, String> getUsers(){

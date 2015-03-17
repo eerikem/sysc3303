@@ -13,7 +13,7 @@ import java.net.InetAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
 import client.Client;
-import server.Server;
+import districtserver.DistrictServer;
 
 //Handles all the connection specific UDP logic
 public class Connection implements Runnable, Serializable {
@@ -67,8 +67,8 @@ public class Connection implements Runnable, Serializable {
 					}
 				});
 			} catch (IOException e) {
-				if (service.getClass() == Server.class) {
-					ConcurrentHashMap<Address, Connection> connections = ((Server) service)
+				if (service.getClass() == DistrictServer.class) {
+					ConcurrentHashMap<Address, Connection> connections = ((DistrictServer) service)
 							.getConnections();
 					for (Address key : connections.keySet()) {
 						if (connections.get(key) == this) {
