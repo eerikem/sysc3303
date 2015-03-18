@@ -11,7 +11,8 @@ public abstract class Server extends Service {
 	private static int PORT;
 	protected Acceptor acceptor;
 
-	private ConcurrentHashMap<Address, Connection> connections;
+	protected static ConcurrentHashMap<Address, Connection> connections;
+	protected static Connection connection;
 	
 	public Server(String file, int port)
 	{
@@ -25,7 +26,7 @@ public abstract class Server extends Service {
 	
 	public void run() {
 		try {
-			Connection connection = acceptor.accept();
+			connection = acceptor.accept();
 			Thread t = new Thread(connection);
 			t.start();
 		} catch (IOException e) {

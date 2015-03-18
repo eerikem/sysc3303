@@ -1,16 +1,19 @@
 package voteserver;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
+import common.Address;
 import common.Connection;
+import common.Event;
 import common.Service;
 import servercommon.Server;
 
 public class MainServer extends Server {
 
-	private ConcurrentHashMap<String, Integer> votes;
-	private static String cfgFile = "votingSystem/src/voteserver/server.cfg";
+	private static ConcurrentHashMap<String, Integer> votes;
+	
 	
 	public MainServer(String file) {
 		super(file, 9080);
@@ -32,6 +35,9 @@ public class MainServer extends Server {
 		// Create and start Server
 		MainServer server = new MainServer(cfgFile);
 		server.run();
+		
+		
+		
 	}
 
 	public void run() {
@@ -43,5 +49,20 @@ public class MainServer extends Server {
 			Service.logError("Server Connection Error");
 		}
 	}
+	
+	private static void startElection()
+	{
+		try {
+			Event e = new Event("STARTELECTION");
+			connection.sendEvent(e);
+		} catch (IOException e) {
+			Service.logError("Error Sending Event: " + e.toString());
+		}
+	}
+	
+	public ConcurrentHashMap<String, Integer> getVotes() {
+		return votes;
+	}
+	
 
 }
