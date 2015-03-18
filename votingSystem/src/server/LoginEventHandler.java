@@ -3,7 +3,6 @@ package server;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import common.Address;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
@@ -42,7 +41,6 @@ public class LoginEventHandler implements EventHandler {
 		}
 
 		try {
-			connection.setDest((Address)e.get("source"));
 			connection.sendEvent(e1);
 		} catch (IOException e3) {
 			Service.logError("Error Sending Event: " + e3.toString());

@@ -43,12 +43,16 @@ public class Server extends Service {
 	}
 
 	public void run() {
-		try {
-			Connection connection = acceptor.accept();
-			Thread t = new Thread(connection);
-			t.start();
-		} catch (IOException e) {
-			Service.logError("Server Connection Error");
+		while (true) {
+			try {
+				Connection connection = acceptor.accept();
+				Thread t = new Thread(connection);
+				t.start();
+			} catch (IOException e) {
+				Service.logError("Server Connection Error");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
