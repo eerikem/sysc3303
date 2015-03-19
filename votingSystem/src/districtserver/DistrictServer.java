@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import servercommon.Server;
 import common.Connection;
 import common.Connector;
+import common.Event;
 import common.Service;
 
 public class DistrictServer extends Server {
@@ -79,14 +80,22 @@ public class DistrictServer extends Server {
 			totalVotes.put(vote, 1);
 		}
 		Service.logInfo(votesToUpdate.get(vote) + " votes for "+ vote);
+		
+		this.updateMainServer();
 		return true;
 	}
 	
 	private boolean updateMainServer(){
 		//send the main server all the contents of votesToUpdate hashmap 
-		
-		
-		
+		try {
+			Event e = new Event("UPDATEVOTES");
+			e.put("votes", votesToUpdate);
+			
+			mainConnection.sendEvent(e);
+		} catch (IOException e) {
+			Service.logError("Error Sending Event: " + e.toString());
+		}
+				
 		//reset hashmap
 		for(String key: votesToUpdate.keySet()){
 			votesToUpdate.put(key, 0);
