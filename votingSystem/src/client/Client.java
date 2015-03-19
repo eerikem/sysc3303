@@ -1,6 +1,7 @@
 package client;
 
 import java.io.IOException;
+
 import common.Connection;
 import common.Connector;
 import common.Event;
@@ -54,6 +55,8 @@ public class Client extends Service {
 			t.start();
 		} catch (IOException e) {
 			Service.logError("Could not establish connection with Server.");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -82,7 +85,7 @@ public class Client extends Service {
 
 
 	public void quit() {
-		connection.stop();
+		connection.kill();
 		System.exit(0);
 	}
 

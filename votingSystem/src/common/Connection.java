@@ -13,7 +13,7 @@ import java.net.InetAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
 import client.Client;
-import server.Server;
+import districtserver.DistrictServer;
 
 //Handles all the connection specific UDP logic
 public class Connection implements Runnable, Serializable {
@@ -23,7 +23,6 @@ public class Connection implements Runnable, Serializable {
 	protected Service service;
 	protected boolean running;
 	private ObjectInputStream ois;
-	private Address dest;
 
 	public Connection(DatagramSocket socket, Service service) {
 		this.socket = socket;
@@ -42,16 +41,29 @@ public class Connection implements Runnable, Serializable {
 		Service.logInfo("Received event: "+ e.getType());
 		return e;
 	}
-
+	
 	public void sendEvent(Event e) throws IOException {
-		e.put("source", new Address(InetAddress.getLocalHost(),socket.getLocalPort()));
+		byte[] bytes = packEvent(e);
+		DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
+		socket.send(packet);
+		Service.logInfo("Sent event " + e.getType() + " to " + socket.getPort());
+	}
+
+	public void sendEvent(Event e,Address dest) throws IOException{
+		byte[] bytes = packEvent(e);
+		DatagramPacket packet = new DatagramPacket(bytes, bytes.length,dest.ip,dest.port);
+		socket.send(packet);
+		Service.logInfo("Sent event " + e.getType() + " to " + dest.port);
+	}
+	
+	public byte[] packEvent(Event e) throws IOException {
+		e.put("source",
+				new Address(InetAddress.getLocalHost(), socket.getLocalPort()));
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutput out = new ObjectOutputStream(bos);
 		out.writeObject(e);
-		byte[] bytes = bos.toByteArray();
-		DatagramPacket packet = new DatagramPacket(bytes, bytes.length,dest.ip, dest.port);
-		socket.send(packet);
+		return bos.toByteArray();
 	}
 
 	@Override
@@ -67,8 +79,8 @@ public class Connection implements Runnable, Serializable {
 					}
 				});
 			} catch (IOException e) {
-				if (service.getClass() == Server.class) {
-					ConcurrentHashMap<Address, Connection> connections = ((Server) service)
+				if (service.getClass() == DistrictServer.class) {
+					ConcurrentHashMap<Address, Connection> connections = ((DistrictServer) service)
 							.getConnections();
 					for (Address key : connections.keySet()) {
 						if (connections.get(key) == this) {
@@ -90,12 +102,23 @@ public class Connection implements Runnable, Serializable {
 	}
 
 	public void setDest(Address dest){
-		this.dest = dest;
+		socket.connect(dest.ip,dest.port);
+	}
+
+	public void kill() {
+		Event e = new Event("KILL");
+		
+		try {
+			sendEvent(e);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		stop();
 	}
 	
 	public void stop() {
 		running = false;
-
+		
 		if (socket != null) {
 			socket.close();
 			socket = null;
