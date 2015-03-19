@@ -26,7 +26,7 @@ public class DistrictServer extends Server {
 	public static void main(String[] args) {
 
 		// Default in case no args
-		String cfgFile = "votingSystem/src/server/server.cfg";
+		String cfgFile = "votingSystem/src/districtserver/server.cfg";
 
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-c")) {
