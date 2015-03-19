@@ -23,6 +23,7 @@ public class Connection implements Runnable, Serializable {
 	protected Service service;
 	protected boolean running;
 	private ObjectInputStream ois;
+	private Address dest;
 
 	public Connection(DatagramSocket socket, Service service) {
 		this.socket = socket;
@@ -102,9 +103,14 @@ public class Connection implements Runnable, Serializable {
 	}
 
 	public void setDest(Address dest){
+		this.dest = dest;
 		socket.connect(dest.ip,dest.port);
 	}
 
+	public Address getDest(){
+		return dest;
+	}
+	
 	public void kill() {
 		Event e = new Event("KILL");
 		

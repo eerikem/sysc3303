@@ -13,13 +13,15 @@ public class DistrictServer extends Server {
 	private ConcurrentHashMap<String, String> users;
 	private ConcurrentHashMap<String, Integer> votesToUpdate;
 	private ConcurrentHashMap<String, Integer> totalVotes;
-	private static int MAIN_SERVER_PORT = 9090;
+	private static int DISTRICT_SERVER_PORT = 9090;
+	private static int MAIN_SERVER_PORT = 9080;
+	private static String DEFAULT_HOST_MAIN = "localhost";
 	private Connector connector;
 	private Connection mainConnection;
 
 	public DistrictServer(String file) {
-		super(file, MAIN_SERVER_PORT);
-		
+		super(file, DISTRICT_SERVER_PORT);
+		Service.logInfo("binding to port "+DISTRICT_SERVER_PORT);
 		connector = new Connector(this);
 		
 		this.users = new ConcurrentHashMap<String, String>();
@@ -44,6 +46,15 @@ public class DistrictServer extends Server {
 	}
 
 	public void run() {
+		
+		try {
+			mainConnection = connector.connect(DEFAULT_HOST_MAIN, MAIN_SERVER_PORT);
+			Thread t = new Thread(connection);
+			t.start();
+		} catch (ClassNotFoundException | IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		while (true) {
 			try {
 				Connection connection = acceptor.accept();
@@ -82,6 +93,10 @@ public class DistrictServer extends Server {
 		}
 		
 		return true;
+	}
+	
+	public Connection getMainConnection(){
+		return mainConnection;
 	}
 	
 	public ConcurrentHashMap<String, String> getUsers(){

@@ -39,13 +39,12 @@ public class Acceptor {
 					+ e.getType() + " on dedicated server socket " + port);
 			e = myConnection.getEvent();
 		}
-		Address source = (Address) e.get("source");
-		DatagramSocket socket = new DatagramSocket();
-		socket.connect(source.ip, source.port);
 		
+		Address source = (Address) e.get("source");
 		e = new Event("CON_SUC");
 		Service.logInfo("Spawning new connection to "+source.port);
-		Connection c = new Connection(socket, service);
+		Connection c = new Connection(new DatagramSocket(), service);
+		c.setDest(source);
 		c.sendEvent(e,source);
 		return c;
 	}

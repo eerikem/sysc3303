@@ -42,15 +42,17 @@ public class MainServer extends Server {
 	}
 
 	public void run() {
-		try {
-			Connection connection = acceptor.accept();
-			Thread t = new Thread(connection);
-			t.start();
-		} catch (IOException e) {
-			Service.logError("Server Connection Error");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while (true) {
+			try {
+				Connection connection = acceptor.accept();
+				connections.put(connection.getDest(), connection);
+				Thread t = new Thread(connection);
+				t.start();
+			} catch (IOException e) {
+				Service.logError("Server Connection Error");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

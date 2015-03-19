@@ -7,7 +7,7 @@ import common.*;
 public abstract class Server extends Service {
 
 	private String DEFAULT_cfgFILE;
-	private static int PORT;
+	private int PORT;
 	protected Acceptor acceptor;
 
 	protected ConcurrentHashMap<Address, Connection> connections;
