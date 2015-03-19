@@ -16,6 +16,8 @@ public class Server extends Service {
 
 	private ConcurrentHashMap<Address, Connection> connections;
 	private ConcurrentHashMap<String, String> users;
+	private ConcurrentHashMap<String, Integer> votesToUpdate;
+	private ConcurrentHashMap<String, Integer> totalVotes;
 
 	public Server(String file) {
 		super(file);
@@ -24,6 +26,8 @@ public class Server extends Service {
 
 		this.connections = new ConcurrentHashMap<Address, Connection>();
 		this.users = new ConcurrentHashMap<String, String>();
+		this.votesToUpdate = new ConcurrentHashMap<String,Integer>();
+		this.totalVotes = new ConcurrentHashMap<String,Integer>();
 	}
 
 	public static void main(String[] args) {
@@ -58,5 +62,31 @@ public class Server extends Service {
 	
 	public ConcurrentHashMap<String, String> getUsers(){
 		return users;
+	}
+	
+	public boolean recordVote(String vote){
+		if(votesToUpdate.containsKey(vote)){
+			votesToUpdate.put(vote, votesToUpdate.get(vote) + 1);
+			totalVotes.put(vote, votesToUpdate.get(vote) + 1);
+		}
+		else{
+			votesToUpdate.put(vote, 1);
+			totalVotes.put(vote, 1);
+		}
+		Service.logInfo(votesToUpdate.get(vote) + " votes for "+ vote);
+		return true;
+	}
+	
+	private boolean updateMainServer(){
+		//send the main server all the contents of votesToUpdate hashmap 
+		
+		
+		
+		//reset hashmap
+		for(String key: votesToUpdate.keySet()){
+			votesToUpdate.put(key, 0);
+		}
+		
+		return true;
 	}
 }
