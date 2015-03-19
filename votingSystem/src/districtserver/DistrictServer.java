@@ -16,7 +16,7 @@ public class DistrictServer extends Server {
 	private Connection mainConnection;
 
 	public DistrictServer(String file) {
-		super(file, 9090);
+		super(file, MAIN_SERVER_PORT);
 		
 		connector = new Connector(this);
 		
@@ -40,12 +40,16 @@ public class DistrictServer extends Server {
 	}
 
 	public void run() {
-		try {
-			Connection connection = acceptor.accept();
-			Thread t = new Thread(connection);
-			t.start();
-		} catch (IOException e) {
-			Service.logError("Server Connection Error");
+		while (true) {
+			try {
+				Connection connection = acceptor.accept();
+				Thread t = new Thread(connection);
+				t.start();
+			} catch (IOException e) {
+				Service.logError("Server Connection Error");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

@@ -1,7 +1,6 @@
 package voteserver;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import common.Address;
@@ -18,7 +17,7 @@ public class MainServer extends Server {
 	public MainServer(String file) {
 		super(file, 9080);
 
-		this.votes = new ConcurrentHashMap<>();
+		votes = new ConcurrentHashMap<>();
 	}
 
 	public static void main(String[] args) {
@@ -34,6 +33,8 @@ public class MainServer extends Server {
 
 		// Create and start Server
 		MainServer server = new MainServer(cfgFile);
+		
+		
 		server.run();
 		
 		
@@ -47,14 +48,19 @@ public class MainServer extends Server {
 			t.start();
 		} catch (IOException e) {
 			Service.logError("Server Connection Error");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	private static void startElection()
+	public void startElection()
 	{
 		try {
 			Event e = new Event("STARTELECTION");
-			connection.sendEvent(e);
+			for (Address key : connections.keySet()){
+				connections.get(key).sendEvent(e);
+			}
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
 		}

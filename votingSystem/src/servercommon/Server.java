@@ -1,6 +1,5 @@
 package servercommon;
 
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import common.*;
@@ -11,8 +10,8 @@ public abstract class Server extends Service {
 	private static int PORT;
 	protected Acceptor acceptor;
 
-	protected static ConcurrentHashMap<Address, Connection> connections;
-	protected static Connection connection;
+	protected ConcurrentHashMap<Address, Connection> connections;
+	protected Connection connection;
 	
 	public Server(String file, int port)
 	{
@@ -24,15 +23,7 @@ public abstract class Server extends Service {
 		this.connections = new ConcurrentHashMap<Address, Connection>();		
 	}
 	
-	public void run() {
-		try {
-			connection = acceptor.accept();
-			Thread t = new Thread(connection);
-			t.start();
-		} catch (IOException e) {
-			Service.logError("Server Connection Error");
-		}
-	}
+	public abstract void run();
 
 	public ConcurrentHashMap<Address, Connection> getConnections() {
 		return connections;

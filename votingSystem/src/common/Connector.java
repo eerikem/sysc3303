@@ -1,7 +1,7 @@
 package common;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.SocketException;
 
 import common.Connection;
 
@@ -14,10 +14,21 @@ public class Connector {
 		this.service = service;
 	}
 
-	public Connection connect(String host, int port) throws SocketException{
+	public Connection connect(String host, int port) throws ClassNotFoundException, IOException{
 		DatagramSocket socket = new DatagramSocket();
 		Connection c = new Connection(socket, service);
-		c.setDest(new Address(host,port));
+		Service.logInfo("Listening on port "+socket.getLocalPort());
+		Address server = new Address(host,port);
+		
+		Event e = new Event("CON_REQ");
+		c.sendEvent(e,server);
+		e = c.getEvent();
+		while(!e.getType().equals("CON_SUC")){
+			e = c.getEvent();
+		}
+		server = (Address)e.get("source");
+		c.setDest(server);
+		Service.logInfo("Set connection socket to "+server.port);
 		return c;
 	}
 }
