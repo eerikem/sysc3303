@@ -12,11 +12,14 @@ import servercommon.Server;
 public class MainServer extends Server {
 
 	private static ConcurrentHashMap<String, Integer> votes;
+	private static boolean votingEnabled;
+	private int numberVotes;
 	
 	
 	public MainServer(String file) {
 		super(file, 9080);
-
+		votingEnabled = false;
+		numberVotes = 0;
 		votes = new ConcurrentHashMap<>();
 	}
 
@@ -37,7 +40,13 @@ public class MainServer extends Server {
 		
 		server.run();
 		
-		
+		PeriodicPostThread predict = new PeriodicPostThread(server);
+		predict.start();
+		try {
+			predict.join();
+		} catch (InterruptedException e) {
+			System.out.println("Main thread interrupted while waiting for prediction thread.");
+		}
 		
 	}
 
@@ -68,6 +77,16 @@ public class MainServer extends Server {
 	
 	public ConcurrentHashMap<String, Integer> getVotes() {
 		return votes;
+	}
+	
+	public boolean getVotingEnabled()
+	{
+		return votingEnabled;
+	}
+	
+	public int getNumberVotes()
+	{
+		return numberVotes;
 	}
 	
 
