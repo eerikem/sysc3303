@@ -60,14 +60,14 @@ public class MainServer extends Server {
 	public void startElection()
 	{
 		votingEnabled = true;
-		try {
+		/*try {
 			Event e = new Event("STARTELECTION");
 			for (Address key : connections.keySet()){
 				connections.get(key).sendEvent(e);
 			}
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
-		}
+		}*/
 		PeriodicPostThread predict = new PeriodicPostThread(this);
 		predict.start();
 	}
