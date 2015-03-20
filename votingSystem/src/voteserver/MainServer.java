@@ -40,14 +40,6 @@ public class MainServer extends Server {
 		
 		server.run();
 		
-		PeriodicPostThread predict = new PeriodicPostThread(server);
-		predict.start();
-		try {
-			predict.join();
-		} catch (InterruptedException e) {
-			System.out.println("Main thread interrupted while waiting for prediction thread.");
-		}
-		
 	}
 
 	public void run() {
@@ -67,6 +59,7 @@ public class MainServer extends Server {
 	
 	public void startElection()
 	{
+		votingEnabled = true;
 		try {
 			Event e = new Event("STARTELECTION");
 			for (Address key : connections.keySet()){
@@ -75,6 +68,8 @@ public class MainServer extends Server {
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
 		}
+		PeriodicPostThread predict = new PeriodicPostThread(this);
+		predict.start();
 	}
 	
 	public ConcurrentHashMap<String, Integer> getVotes() {
