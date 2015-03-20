@@ -28,8 +28,13 @@ public class LoginEventHandler implements EventHandler {
 			e1.put("response", "blank_user");
 			Service.logWarn("Login attempt: blank user");
 		} else if (users.containsKey(username)) {
-			if (password.equals(users.get(username).password)) {
+			if (users.get(username).hasVoted()){
+				e1.put("response", "already_voted");
+				Service.logInfo(username + " already voted.");
+			}
+			else if(password.equals(users.get(username).password)) {
 				e1.put("response", "login_success");
+				e1.put("person", users.get(username));
 				Service.logInfo(username + " logged in.");
 			} else {
 				e1.put("response", "incorrect_password");
