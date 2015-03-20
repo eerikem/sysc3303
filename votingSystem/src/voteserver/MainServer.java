@@ -14,6 +14,7 @@ public class MainServer extends Server {
 	private static ConcurrentHashMap<String, Integer> votes;
 	private static boolean votingEnabled;
 	private int numberVotes;
+	private MainServerGUI serverGUI;
 	
 	
 	public MainServer(String file) {
@@ -21,6 +22,8 @@ public class MainServer extends Server {
 		votingEnabled = false;
 		numberVotes = 0;
 		votes = new ConcurrentHashMap<>();
+		serverGUI = new MainServerGUI(this);
+		serverGUI.setVisible(true);
 	}
 
 	public static void main(String[] args) {
@@ -73,6 +76,10 @@ public class MainServer extends Server {
 		predict.start();
 	}
 	
+	public void stopElection(){
+		
+	}
+	
 	public boolean updateVotes(ConcurrentHashMap<String,Integer> v){
 		
 		for(String key: v.keySet()){
@@ -85,6 +92,7 @@ public class MainServer extends Server {
 			numberVotes += v.get(key);
 			Service.logInfo(key + " now has " + votes.get(key) + " votes");
 		}
+		serverGUI.updateResults();
 		return true;
 		
 	}
