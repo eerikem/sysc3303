@@ -129,7 +129,7 @@ public class Client extends Service {
 
 			Event e = new Event("VOTE");
 			e.put("vote", vote);
-			e.put("name", name);
+			e.put("person", loggedOn);
 			connection.sendEvent(e);
 
 		} catch (IOException e1) {

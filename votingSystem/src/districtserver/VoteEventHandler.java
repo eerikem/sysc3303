@@ -6,6 +6,7 @@ import common.Address;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
+import common.Person;
 import common.Service;
 
 
@@ -16,7 +17,7 @@ public class VoteEventHandler implements EventHandler {
 		
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
-		
+		DistrictServer server = (DistrictServer)connection.getService();
 				
 		String vote = (String) e.get("vote");
 		
@@ -27,9 +28,15 @@ public class VoteEventHandler implements EventHandler {
 			Service.logWarn("Vote attempt: blank vote");
 		}
 		else{
-			e1.put("response", "vote_success");
-			((DistrictServer) connection.getService()).recordVote(vote);
-			Service.logInfo("Registered vote for " + vote);
+			Person voter = (Person) e.get("person");
+			if(server.getUsers().get(voter.username).voted){
+				e1.put("response", "already_voted");
+			}else{
+				server.getUsers().get(voter.username).voted = true;
+				e1.put("response", "vote_success");
+				((DistrictServer) connection.getService()).recordVote(vote);
+				Service.logInfo("Registered vote for " + vote);
+			}
 			
 		}
 			

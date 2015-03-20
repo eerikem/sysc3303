@@ -23,7 +23,7 @@ public class LoginResponseEventHandler implements EventHandler {
 			Service.logInfo("Please enter a username");
 			break;
 		case "login_success":
-			client.setPerson((Person) e.get("Person"));
+			client.setPerson((Person) e.get("person"));
 			client.vote();
 			break;
 		case "incorrect_password":
@@ -38,6 +38,7 @@ public class LoginResponseEventHandler implements EventHandler {
 			break;
 		case "already_voted":
 			Service.logInfo("You have already voted.");
+			break;
 		default:
 			Service.logWarn("Unknown Login Response");
 			break;

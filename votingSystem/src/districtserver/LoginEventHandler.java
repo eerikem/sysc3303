@@ -34,7 +34,7 @@ public class LoginEventHandler implements EventHandler {
 			}
 			else if(password.equals(users.get(username).password)) {
 				e1.put("response", "login_success");
-				e1.put("Person", users.get(username));
+				e1.put("person", users.get(username));
 				Service.logInfo(username + " logged in.");
 			} else {
 				e1.put("response", "incorrect_password");
