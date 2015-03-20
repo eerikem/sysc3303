@@ -55,8 +55,10 @@ public class ClientTester {
 			}
 			br.close();
 		    
+			int cnt = 0;
+			
 			Random t = new Random();
-			for (int j = 0; j < 90; j++) {
+			for (int j = 0; j < 10; j++) {
 				
 				for (int i = 0; i < people.size(); i++) {
 					Person voter = people.get(i);
@@ -79,9 +81,12 @@ public class ClientTester {
 				for (int i = 0; i < people.size(); i++) {
 					tester.clients.get(i).vote(tmp[r.nextInt(tmp.length)]);
 					Thread.sleep(20);
+					cnt++;
 				}
 
 			}
+			
+			Service.logInfo("Sent "+cnt+" votes.");
 
 			Thread.sleep(500);
 

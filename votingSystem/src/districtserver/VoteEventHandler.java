@@ -29,8 +29,12 @@ public class VoteEventHandler implements EventHandler {
 		}
 		else{
 			Person voter = (Person) e.get("person");
-			if(server.getUsers().get(voter.username).voted){
+			if(voter == null){
+				e1.put("response", "invalid_vote");
+				Service.logWarn("Unonimous vote");
+			}else if(server.getUsers().get(voter.username).voted){
 				e1.put("response", "already_voted");
+				Service.logWarn("Invalid second vote attempted");
 			}else{
 				server.getUsers().get(voter.username).voted = true;
 				e1.put("response", "vote_success");

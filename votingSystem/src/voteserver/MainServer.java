@@ -3,9 +3,7 @@ package voteserver;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import common.Address;
 import common.Connection;
-import common.Event;
 import common.Service;
 import servercommon.Server;
 

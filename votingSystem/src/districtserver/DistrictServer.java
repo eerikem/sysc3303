@@ -17,7 +17,7 @@ public class DistrictServer extends Server {
 	private ConcurrentHashMap<String, Integer> totalVotes;
 	private static int DISTRICT_SERVER_PORT = 9090;
 	private static int MAIN_SERVER_PORT = 9080;
-	private static String DEFAULT_HOST_MAIN = "localhost";
+	private static String DEFAULT_HOST_MAIN = "134.117.59.115";
 	private Connector connector;
 	private Connection mainConnection;
 

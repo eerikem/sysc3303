@@ -8,11 +8,11 @@ import common.Event;
 import common.Person;
 import common.Service;
 
-public class Client extends Service {
+public class TestClient extends Client {
 
 	private static String DEFAULT_NAME = "Client";
 	private static String DEFAULT_cfgFILE = "votingSystem/src/client/client.cfg";
-	private static String DEFAULT_HOST = "134.117.59.116";
+	private static String DEFAULT_HOST = "localhost";
 	private static int DEFAULT_PORT = 9090;
 	private Connector connector;
 	private Connection connection;
@@ -21,14 +21,11 @@ public class Client extends Service {
 	private String name;
 	private Person loggedOn;
 
-	public Client(String file, String name) {
-		super(file);
+	public TestClient(String file, String name) {
+		super(file,name);
 
-		this.connector = new Connector(this);
-		
-		this.name = name;
 		clientUI = new ClientUI(this);
-		clientUI.setVisible(true);
+		this.connector = new Connector(this);
 	}
 
 	public static void main(String[] args) {
@@ -46,8 +43,21 @@ public class Client extends Service {
 		}
 
 		// Create and Start Client
-		Client client = new Client(cfgFile, name);
+		TestClient client = new TestClient(cfgFile, name);
 		client.run();
+		
+		client.vote("");
+		
+		Person p = new Person("My Name", "", "");		
+		client.register(p);
+
+		p = new Person("My Name", "User", "Pass");		
+		client.login(p.username,p.password);
+		
+		client.register(p);
+		client.login(p.username, p.password);
+		client.vote("Comis");
+		client.vote("Comis");
 	}
 
 	public void run() {
