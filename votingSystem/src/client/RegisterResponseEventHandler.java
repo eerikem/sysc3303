@@ -6,7 +6,7 @@ import common.EventHandler;
 import common.Service;
 import client.Client;
 
-public class LoginResponseEventHandler implements EventHandler {
+public class RegisterResponseEventHandler implements EventHandler {
 
 	@Override
 	public boolean handleEvent(Event e) {
@@ -18,21 +18,13 @@ public class LoginResponseEventHandler implements EventHandler {
 		String response = (String) e.get("response");
 
 		switch (response) {
-		case "blank_user":
-			Service.logInfo("Please enter a username");
+		case "already_registered":
+			Service.logInfo("User already registered");
 			break;
-		case "login_success":
-			client.vote();
-			break;
-		case "incorrect_password":
-			Service.logInfo("Bad password");
-			break;
-		case "registered_user":
+		case "registration_success":
 			Service.logInfo("registered with server.");
-			break;
-		case "user_unregistered":
-			Service.logInfo("Please register with server.");
-			client.enableReg();
+			//TODO seperate login GUI?
+			//client.enableLogin();
 			break;
 		default:
 			Service.logWarn("Unknown Login Response");

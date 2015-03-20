@@ -6,11 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import servercommon.Server;
 import common.Connection;
 import common.Connector;
+import common.Person;
 import common.Service;
 
 public class DistrictServer extends Server {
 
-	private ConcurrentHashMap<String, String> users;
+	private ConcurrentHashMap<String, Person> users;
 	private ConcurrentHashMap<String, Integer> votesToUpdate;
 	private ConcurrentHashMap<String, Integer> totalVotes;
 	private static int DISTRICT_SERVER_PORT = 9090;
@@ -24,7 +25,7 @@ public class DistrictServer extends Server {
 		Service.logInfo("binding to port "+DISTRICT_SERVER_PORT);
 		connector = new Connector(this);
 		
-		this.users = new ConcurrentHashMap<String, String>();
+		this.users = new ConcurrentHashMap<String, Person>();
 		this.votesToUpdate = new ConcurrentHashMap<String,Integer>();
 		this.totalVotes = new ConcurrentHashMap<String,Integer>();
 	}
@@ -99,7 +100,7 @@ public class DistrictServer extends Server {
 		return mainConnection;
 	}
 	
-	public ConcurrentHashMap<String, String> getUsers(){
+	public ConcurrentHashMap<String, Person> getUsers(){
 		return users;
 	}
 }

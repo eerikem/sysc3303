@@ -5,6 +5,7 @@ import java.io.IOException;
 import common.Connection;
 import common.Connector;
 import common.Event;
+import common.Person;
 import common.Service;
 
 public class Client extends Service {
@@ -72,6 +73,16 @@ public class Client extends Service {
 			Service.logError("Error Sending Event: " + e.toString());
 		}
 	}
+	
+	public void register(Person p){
+		try {
+			Event e = new Event("REGISTER");
+			e.put("person", p);
+			connection.sendEvent(e);
+		} catch (IOException e) {
+			Service.logError("Error Sending Event: " + e.toString());
+		}
+	}
 
 	public void loginFailed(String reason) {
 		name = clientUI.getNewName(reason);
@@ -91,6 +102,10 @@ public class Client extends Service {
 
 	public void vote(){
 		clientUI.enableVoting();
+	}
+	
+	public void enableReg(){
+		clientUI.enableReg();
 	}
 	
 	public void displaySuccess(String message) {

@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
+import common.Person;
 import common.Service;
 
 public class LoginEventHandler implements EventHandler {
@@ -15,7 +16,7 @@ public class LoginEventHandler implements EventHandler {
 
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
-		ConcurrentHashMap<String, String> users = ((DistrictServer) connection
+		ConcurrentHashMap<String, Person> users = ((DistrictServer) connection
 				.getService()).getUsers();
 
 		String username = (String) e.get("username");
@@ -27,7 +28,7 @@ public class LoginEventHandler implements EventHandler {
 			e1.put("response", "blank_user");
 			Service.logWarn("Login attempt: blank user");
 		} else if (users.containsKey(username)) {
-			if (password.equals(users.get(username))) {
+			if (password.equals(users.get(username).password)) {
 				e1.put("response", "login_success");
 				Service.logInfo(username + " logged in.");
 			} else {
@@ -35,9 +36,9 @@ public class LoginEventHandler implements EventHandler {
 				Service.logInfo(username + " wrong password.");
 			}
 		}else{
-			e1.put("response", "registered_user");
-			users.put(username, password);
-			Service.logInfo("Registered " + username + " " + password);
+			e1.put("response", "user_unregistered");
+			//users.put(username, password);
+			Service.logInfo("Received login event from " + username);
 		}
 
 		try {
