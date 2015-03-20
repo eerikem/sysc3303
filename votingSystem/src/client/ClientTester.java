@@ -55,35 +55,46 @@ public class ClientTester {
 			}
 			br.close();
 		    
-			for (int i = 0 ; i<people.size();i++){
-				tester.clients.get(i).register(people.get(i));
+			Random t = new Random();
+			for (int j = 0; j < 90; j++) {
+				
+				for (int i = 0; i < people.size(); i++) {
+					Person voter = people.get(i);
+					voter.username = voter.username.concat(Integer.toString(i)+1000*t.nextInt(20));
+					tester.clients.get(i).register(voter);
+				}
+
+				Thread.sleep(500);
+
+				for (int i = 0; i < people.size(); i++) {
+					tester.clients.get(i).login(people.get(i).username,
+							people.get(i).password);
+				}
+
+				Thread.sleep(500);
+
+				Random r = new Random();
+				String[] tmp = { "Greens", "NDP", "Liberals", "Conservatives",
+						"Comis" };
+				for (int i = 0; i < people.size(); i++) {
+					tester.clients.get(i).vote(tmp[r.nextInt(tmp.length)]);
+					Thread.sleep(20);
+				}
+
+			}
+
+			Thread.sleep(500);
+
+			for (Client c : tester.clients) {
+				c.quit();
 			}
 			
-			Thread.sleep(1000);
-		    
-			for (int i = 0 ; i<people.size();i++){
-				tester.clients.get(i).login(people.get(i).username,people.get(i).password);
-			}
-			
-			Thread.sleep(1000);
-			
-			Random r = new Random();
-			String[] tmp = { "Greens", "NDP", "Liberals", "Conservatives", "Comis" };
-			for (int i = 0 ; i<people.size();i++){
-				tester.clients.get(i).vote(tmp[r.nextInt(tmp.length)]);
-			}
-		    
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// Create and Start Client
-		Client client = new Client(DEFAULT_cfgFILE, name);
-		client.run();
 	}
 }

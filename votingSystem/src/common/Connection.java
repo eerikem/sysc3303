@@ -35,7 +35,6 @@ public class Connection implements Runnable, Serializable {
 		byte[] buffer = new byte[5000];
 		DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 		socket.receive(request);
-		Service.logInfo("Received packet.");
 		ois = new ObjectInputStream(new ByteArrayInputStream(request.getData()));
 		Event e = (Event) ois.readObject();
 		e.put("connection", this);

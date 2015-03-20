@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 
 public abstract class Service {
 
-	private static int THREAD_POOL_COUNT = 5;
+	private static int THREAD_POOL_COUNT = 20;
 
 	protected Reactor reactor;
 	protected String protocol;

@@ -94,12 +94,11 @@ public class Client extends Service {
 		}
 	}
 
-
 	public void quit() {
 		connection.kill();
 		System.exit(0);
 	}
-
+	
 	public void vote(){
 		clientUI.enableVoting();
 	}
