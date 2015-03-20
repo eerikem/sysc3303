@@ -72,6 +72,21 @@ public class MainServer extends Server {
 		predict.start();
 	}
 	
+	public boolean updateVotes(ConcurrentHashMap<String,Integer> v){
+		
+		for(String key: v.keySet()){
+			if(votes.containsKey(key)){
+				votes.put(key, votes.get(key) + v.get(key));
+			}
+			else{
+				votes.put(key, v.get(key));
+			}
+			Service.logInfo(key + " now has " + votes.get(key) + " votes");
+		}
+		return true;
+		
+	}
+	
 	public ConcurrentHashMap<String, Integer> getVotes() {
 		return votes;
 	}

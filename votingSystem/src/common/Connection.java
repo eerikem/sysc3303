@@ -32,7 +32,7 @@ public class Connection implements Runnable, Serializable {
 	}
 
 	public Event getEvent() throws IOException, ClassNotFoundException {
-		byte[] buffer = new byte[1000];
+		byte[] buffer = new byte[5000];
 		DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 		socket.receive(request);
 		Service.logInfo("Received packet.");
