@@ -72,6 +72,10 @@ public class MainServer extends Server {
 		}
 	}
 	
+	public void stopElection(){
+		
+	}
+	
 	public boolean updateVotes(ConcurrentHashMap<String,Integer> v){
 		
 		for(String key: v.keySet()){

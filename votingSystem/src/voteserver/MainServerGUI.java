@@ -102,9 +102,9 @@ public class MainServerGUI extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startElectionButton) {
-			
+			server.startElection();
 		}else if(e.getSource() == stopElectionButton){
-			
+			server.stopElection();
 		}
 		
 	}
