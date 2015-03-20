@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import common.Service;
+
 public class PeriodicPostThread extends Thread{
 	
 	private MainServer main;
@@ -17,24 +19,30 @@ public class PeriodicPostThread extends Thread{
 		votePoint = new HashMap<>(main.getVotes());
 		votePlot = new ArrayList<>();
 		votePlot.add(votePoint);
-		prevNumVotes = main.getNumberVotes();
+		prevNumVotes = 0;
 	}
 	
-	public void run()
-	{
+	public void run(){
+		Service.logInfo("Post Thread started");
 		while(main.getVotingEnabled())
 		{
-			if(main.getNumberVotes() - prevNumVotes > 10)
+			try {
+				sleep(5000);
+			} catch (InterruptedException e) {
+				Service.logError("Post thread interrupted while waiting");
+			}
+			if(main.getNumberVotes() - prevNumVotes >= 5)
 			{//magic
+				prevNumVotes = main.getNumberVotes();
 				votePoint = new HashMap<>(main.getVotes());
 				votePlot.add(votePoint);
 				String trendingCandidate = getBestTrend();
 				String leadingCandidate = getLeading();
 				String majCandidate = getMajority();
-				System.out.println("Predictions:");
-				System.out.println("Currently trending candidate: " + trendingCandidate);
-				System.out.println("Currently leading candidate: " + leadingCandidate);
-				System.out.println("Candidate with majority lead: " + majCandidate);
+				Service.logInfo("Predictions:");
+				Service.logInfo("Currently trending candidate: " + trendingCandidate);
+				Service.logInfo("Currently leading candidate: " + leadingCandidate);
+				Service.logInfo("Candidate with majority lead: " + majCandidate);
 			}		
 		}	
 	}
@@ -44,9 +52,14 @@ public class PeriodicPostThread extends Thread{
 		String incombentCandidate = "No one";
 		Integer bestVoteDif = 0;
 		HashMap<String, Integer> candidateList = votePlot.get(votePlot.indexOf(votePoint)-1);
-		
+
 		for(String cand: votePoint.keySet())
 		{
+			if(!candidateList.containsKey(cand))
+			{
+				candidateList.put(cand, 0);
+			}
+			
 			Integer voteDif = votePoint.get(cand) - candidateList.get(cand);
 			if(voteDif > bestVoteDif)
 			{

@@ -43,6 +43,7 @@ public class MainServer extends Server {
 	}
 
 	public void run() {
+		startElection();
 		while (true) {
 			try {
 				Connection connection = acceptor.accept();
@@ -81,6 +82,7 @@ public class MainServer extends Server {
 			else{
 				votes.put(key, v.get(key));
 			}
+			numberVotes += v.get(key);
 			Service.logInfo(key + " now has " + votes.get(key) + " votes");
 		}
 		return true;
