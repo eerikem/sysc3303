@@ -12,7 +12,7 @@ public class Client extends Service {
 
 	private static String DEFAULT_NAME = "Client";
 	private static String DEFAULT_cfgFILE = "votingSystem/src/client/client.cfg";
-	private static String DEFAULT_HOST = "134.117.59.116";
+	private static String DEFAULT_HOST = "localhost";
 	private static int DEFAULT_PORT = 9090;
 	private Connector connector;
 	private Connection connection;
