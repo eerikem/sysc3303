@@ -18,4 +18,9 @@ public class Person implements Serializable{
 		this.voted = false;
 	}
 	
+	public boolean hasVoted()
+	{
+		return voted;
+	}
+	
 }

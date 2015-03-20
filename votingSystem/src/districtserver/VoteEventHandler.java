@@ -30,12 +30,12 @@ public class VoteEventHandler implements EventHandler {
 			e1.put("response", "vote_success");
 			((DistrictServer) connection.getService()).recordVote(vote);
 			Service.logInfo("Registered vote for " + vote);
+			
 		}
 			
 		
 		
 		try {
-			connection.setDest((Address)e.get("source"));
 			connection.sendEvent(e1);
 		} catch (IOException e3) {
 			Service.logError("Error Sending Event: " + e3.toString());

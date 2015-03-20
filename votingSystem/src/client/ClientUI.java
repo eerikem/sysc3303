@@ -144,6 +144,12 @@ public class ClientUI extends JFrame implements ActionListener {
 		pane.add(votePanel);
 		this.pack();
 	}
+	public void disableVoting(){
+		Container pane = this.getContentPane();
+		pane.removeAll();
+		pane.add(loginPanel);
+		this.pack();
+	}
 
 	public String getNewName(String reason) {
 		return JOptionPane.showInputDialog(ClientUI.this, "Error " + reason
@@ -167,6 +173,7 @@ public class ClientUI extends JFrame implements ActionListener {
 				if (b.isSelected()) {
 					client.vote(b.getText());
 					Service.logInfo("Client voted for the " + b.getText());
+					disableVoting();
 				}
 			}
 		}else if(e.getSource() == loginButton){

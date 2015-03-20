@@ -19,6 +19,7 @@ public class Client extends Service {
 	private boolean testMode = false;
 	private ClientUI clientUI;
 	private String name;
+	private Person loggedOn;
 
 	public Client(String file, String name) {
 		super(file);
@@ -128,10 +129,16 @@ public class Client extends Service {
 
 			Event e = new Event("VOTE");
 			e.put("vote", vote);
+			e.put("name", name);
 			connection.sendEvent(e);
 
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	public void setPerson(Person p)
+	{
+		loggedOn = p;
 	}
 }

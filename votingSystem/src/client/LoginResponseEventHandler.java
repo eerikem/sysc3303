@@ -3,6 +3,7 @@ package client;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
+import common.Person;
 import common.Service;
 import client.Client;
 
@@ -22,6 +23,7 @@ public class LoginResponseEventHandler implements EventHandler {
 			Service.logInfo("Please enter a username");
 			break;
 		case "login_success":
+			client.setPerson((Person) e.get("Person"));
 			client.vote();
 			break;
 		case "incorrect_password":
@@ -34,6 +36,8 @@ public class LoginResponseEventHandler implements EventHandler {
 			Service.logInfo("Please register with server.");
 			client.enableReg();
 			break;
+		case "already_voted":
+			Service.logInfo("You have already voted.");
 		default:
 			Service.logWarn("Unknown Login Response");
 			break;
