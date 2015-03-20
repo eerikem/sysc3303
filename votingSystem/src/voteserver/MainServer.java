@@ -12,11 +12,14 @@ import servercommon.Server;
 public class MainServer extends Server {
 
 	private static ConcurrentHashMap<String, Integer> votes;
+	private static boolean votingEnabled;
+	private int numberVotes;
 	
 	
 	public MainServer(String file) {
 		super(file, 9080);
-
+		votingEnabled = false;
+		numberVotes = 0;
 		votes = new ConcurrentHashMap<>();
 	}
 
@@ -37,11 +40,10 @@ public class MainServer extends Server {
 		
 		server.run();
 		
-		
-		
 	}
 
 	public void run() {
+		startElection();
 		while (true) {
 			try {
 				Connection connection = acceptor.accept();
@@ -58,18 +60,47 @@ public class MainServer extends Server {
 	
 	public void startElection()
 	{
-		try {
+		votingEnabled = true;
+		/*try {
 			Event e = new Event("STARTELECTION");
 			for (Address key : connections.keySet()){
 				connections.get(key).sendEvent(e);
 			}
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
+		}*/
+		PeriodicPostThread predict = new PeriodicPostThread(this);
+		predict.start();
+	}
+	
+	public boolean updateVotes(ConcurrentHashMap<String,Integer> v){
+		
+		for(String key: v.keySet()){
+			if(votes.containsKey(key)){
+				votes.put(key, votes.get(key) + v.get(key));
+			}
+			else{
+				votes.put(key, v.get(key));
+			}
+			numberVotes += v.get(key);
+			Service.logInfo(key + " now has " + votes.get(key) + " votes");
 		}
+		return true;
+		
 	}
 	
 	public ConcurrentHashMap<String, Integer> getVotes() {
 		return votes;
+	}
+	
+	public boolean getVotingEnabled()
+	{
+		return votingEnabled;
+	}
+	
+	public int getNumberVotes()
+	{
+		return numberVotes;
 	}
 	
 
