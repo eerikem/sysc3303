@@ -16,7 +16,7 @@ public class Client extends Service {
 	private static int DEFAULT_PORT = 9090;
 	private Connector connector;
 	private Connection connection;
-
+	private boolean testMode = false;
 	private ClientUI clientUI;
 	private String name;
 
@@ -116,6 +116,13 @@ public class Client extends Service {
 		clientUI.displayError(reason);
 	}
 
+	public void enableTestMode(){
+		testMode = true;
+	}
+	
+	public boolean inTest(){
+		return testMode;
+	}
 	public void vote(String vote) {
 		try {
 

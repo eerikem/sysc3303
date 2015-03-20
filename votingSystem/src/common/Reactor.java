@@ -19,7 +19,7 @@ public class Reactor {
 			properties.load(new FileInputStream(file));
 			init();
 		} catch (FileNotFoundException e) {
-			Service.logError("File not found.");
+			Service.logError("File not found "+ file);
 			System.exit(0);
 		} catch (IOException e) {
 			Service.logError(e.toString());
