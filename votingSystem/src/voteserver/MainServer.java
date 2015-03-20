@@ -3,6 +3,7 @@ package voteserver;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import client.ClientUI;
 import common.Address;
 import common.Connection;
 import common.Event;
@@ -12,12 +13,15 @@ import servercommon.Server;
 public class MainServer extends Server {
 
 	private static ConcurrentHashMap<String, Integer> votes;
+	private MainServerGUI serverGUI;
 	
 	
 	public MainServer(String file) {
 		super(file, 9080);
 
 		votes = new ConcurrentHashMap<>();
+		serverGUI = new MainServerGUI(this);
+		serverGUI.setVisible(true);
 	}
 
 	public static void main(String[] args) {
@@ -77,6 +81,7 @@ public class MainServer extends Server {
 			else{
 				votes.put(key, v.get(key));
 			}
+			serverGUI.updateResults();
 			Service.logInfo(key + " now has " + votes.get(key) + " votes");
 		}
 		return true;

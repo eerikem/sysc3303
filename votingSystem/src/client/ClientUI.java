@@ -46,6 +46,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation(300, 150);
+		
 		setResizable(true);
 		setLayout(new FlowLayout());
 
