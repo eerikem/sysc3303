@@ -141,6 +141,7 @@ public class ClientUI extends JFrame implements ActionListener {
 	public void enableVoting() {
 		Container pane = this.getContentPane();
 		pane.removeAll();
+		buttonGroup.clearSelection();
 		pane.add(votePanel);
 		this.pack();
 	}
@@ -148,6 +149,9 @@ public class ClientUI extends JFrame implements ActionListener {
 		Container pane = this.getContentPane();
 		pane.removeAll();
 		pane.add(loginPanel);
+		userField.setText("");
+		passField.setText("");
+		nameField.setText("");
 		this.pack();
 	}
 
