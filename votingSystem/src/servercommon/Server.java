@@ -12,7 +12,6 @@ public abstract class Server extends Service {
 	protected Acceptor acceptor;
 
 	protected ConcurrentHashMap<Address, Connection> connections;
-	protected Connection connection;
 	
 	public Server(String file, int port)
 	{

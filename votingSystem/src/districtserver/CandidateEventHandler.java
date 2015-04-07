@@ -22,7 +22,7 @@ public class CandidateEventHandler implements EventHandler{
 		Connection connection = (Connection) e.get("connection");
 		ConcurrentHashMap<String, Voter> users = ((DistrictServer) connection
 				.getService()).getUsers();
-		System.out.println("Hello WORLD");
+		Service.logInfo("Hello WORLD");
 		return false;
 	}
 

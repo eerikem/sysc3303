@@ -54,14 +54,14 @@ public class MainServer extends Server {
 	}
 
 	public void run() throws FileNotFoundException {
-		startElection();
+//		startElection();
 		while (true) {
 			try {
 				Connection connection = acceptor.accept();
 				//This connect is an arrayList
 				connections.put(connection.getDest(), connection);
 				Thread t = new Thread(connection);
-				SendCandidateList(ReadCandidateList());			
+	
 				t.start();
 			} catch (IOException e) {
 				Service.logError("Server Connection Error");
@@ -74,27 +74,31 @@ public class MainServer extends Server {
 	public void startElection() throws FileNotFoundException
 	{
 		votingEnabled = true;
-		/*try {
+		SendCandidateList(ReadCandidateList());		
+		try {
 			Event e = new Event("STARTELECTION");
 			for (Address key : connections.keySet()){
 				connections.get(key).sendEvent(e);
 			}
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
-		}*/
+		}
 		PeriodicPostThread predict = new PeriodicPostThread(this);
 		predict.start();
 	}
 	
 	@SuppressWarnings("unused")
 	public ArrayList<Candidate> ReadCandidateList() throws FileNotFoundException {
-//		ElectionCandidates elec = new ElectionCandidates("votingSystem/src/voteserver/log.txt");
-//		try {
-//			Event e = new Event("ANNOUNCECANDIDATES");
-//			e.put("votes", elec);
-////			connection.sendEvent(e);
-//		} catch (IOException e) {
-//			Service.logError("Error Sending Event: " + e.toString());
+		ElectionCandidates elec = new ElectionCandidates("votingSystem/src/voteserver/log.txt");
+		try {
+			Event e = new Event("ANNOUNCECANDIDATES");
+			e.put("votes", elec);
+			for(Address key: connections.keySet()){
+				connections.get(key).sendEvent(e);
+			}
+		} catch (IOException e) {
+			Service.logError("Error Sending Event: " + e.toString());
+		}
 		return null; //elec.parseLog();
 	}
 	

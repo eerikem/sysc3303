@@ -47,7 +47,7 @@ public class DistrictServer extends Server {
 	public void run() {
 		try {
 			mainConnection = connector.connect(DEFAULT_HOST_MAIN, MAIN_SERVER_PORT);
-			Thread t = new Thread(connection);
+			Thread t = new Thread(mainConnection);
 			t.start();
 		} catch (ClassNotFoundException | IOException e1) {
 			e1.printStackTrace();
