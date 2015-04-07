@@ -10,10 +10,11 @@ import common.Person.Candidate;
 
 public class ElectionCandidates implements Serializable {
 	
-	String log;
-	ArrayList<Candidate> candidate;
+	public String log;
+	private ArrayList<Candidate> candidate;
 	public ElectionCandidates(String logfile) throws FileNotFoundException{
 		log = logfile;
+		candidate = new ArrayList<Candidate>();
 		parseLog();
 	}
 	
@@ -22,7 +23,9 @@ public class ElectionCandidates implements Serializable {
         FileInputStream fis = new FileInputStream(log);
         Scanner scanner = new Scanner(fis);
         while(scanner.hasNextLine()){
-            System.out.println(scanner.nextLine());
+            String line = scanner.nextLine();
+            String []ret = line.split(",");
+            candidate.add(new Candidate(ret[0],ret[1],ret[2]));            
         }
         scanner.close();
 		return null;
@@ -35,5 +38,13 @@ public class ElectionCandidates implements Serializable {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public ArrayList<Candidate> getCandidate() {
+		return candidate;
+	}
+
+	public void setCandidate(ArrayList<Candidate> candidate) {
+		this.candidate = candidate;
 	}
 }

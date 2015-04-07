@@ -29,7 +29,6 @@ public class DistrictServer extends Server {
 		super(file, DISTRICT_SERVER_PORT);
 		Service.logInfo("binding to port "+DISTRICT_SERVER_PORT);
 		connector = new Connector(this);
-		
 		this.users = new ConcurrentHashMap<String, Voter>();
 		this.votesToUpdate = new ConcurrentHashMap<String,Integer>();
 		this.totalVotes = new ConcurrentHashMap<String,Integer>();
@@ -60,6 +59,7 @@ public class DistrictServer extends Server {
 			try {
 				Connection connection = acceptor.accept();
 				Thread t = new Thread(connection);
+				connections.put(connection.getDest(), connection);
 				t.start();
 			} catch (IOException e) {
 				Service.logError("Server Connection Error");

@@ -62,7 +62,7 @@ public class Reactor {
 	}
 
 	// Dispatches Event e to the appropriate EventHandler.
-	public boolean dispatch(Event e) {
+	public boolean dispatch(Event e) throws IOException {
 		EventHandler h = map.get(e.getType());
 		if (h == null)
 			h = map.get("UNKNOWN");

@@ -20,8 +20,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import voteserver.ElectionCandidates;
 import common.Voter;
 import common.Service;
+import common.Person.Candidate;
 
 public class ClientUI extends JFrame implements ActionListener {
 
@@ -48,7 +50,6 @@ public class ClientUI extends JFrame implements ActionListener {
 		this.client = client;
 
 		initLoginPanel();
-		initVotePanel();
 		initRegPanel();
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -85,13 +86,14 @@ public class ClientUI extends JFrame implements ActionListener {
 	private void initVotePanel(){
 		// TODO get candidates from client
 		String[] tmp = { "Greens", "NDP", "Liberals", "Conservatives", "Comis" };
+		ElectionCandidates elec = client.getCandidates();
 		candidates = new ArrayList<String>(Arrays.asList(tmp));
 		candidateButtons = new ArrayList<JRadioButton>();
 		votePanel = new JPanel();
-
+		ArrayList<Candidate> can = elec.getCandidate();
 		buttonGroup = new ButtonGroup();
-		for (String candidate : candidates) {
-			JRadioButton b = new JRadioButton(candidate);
+		for (Candidate candidate : can) {
+			JRadioButton b = new JRadioButton(candidate.getName() + candidate.getEntity());
 			candidateButtons.add(b);
 			buttonGroup.add(b);
 			votePanel.add(b);
@@ -107,7 +109,6 @@ public class ClientUI extends JFrame implements ActionListener {
 	
 	private void initLoginPanel(){
 		loginPanel = new JPanel();
-		
 
 		userField = new JTextField();
 		userField.setColumns(10);
@@ -139,6 +140,11 @@ public class ClientUI extends JFrame implements ActionListener {
 	}
 	
 	public void enableVoting() {
+		if (client.getCandidates() == null){
+			JOptionPane.showMessageDialog(this, "Election Has Not Started. Please Try again later");
+			return;
+		}
+		initVotePanel();
 		Container pane = this.getContentPane();
 		pane.removeAll();
 		buttonGroup.clearSelection();
