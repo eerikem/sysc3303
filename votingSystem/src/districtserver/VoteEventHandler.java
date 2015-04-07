@@ -27,7 +27,7 @@ public class VoteEventHandler implements EventHandler {
 			e1.put("response", "blank_vote");
 			Service.logWarn("Vote attempt: blank vote");
 		}
-		else if(!server.getElectionStop()){
+		else if(server.getElectionStop()){
 			e1.put("response", "election_ended");
 			Service.logInfo("Election has ended");
 		}

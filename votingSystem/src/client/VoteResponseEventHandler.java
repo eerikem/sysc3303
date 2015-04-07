@@ -28,7 +28,7 @@ public class VoteResponseEventHandler implements EventHandler{
 			Service.logInfo("User has already voted");
 			break;
 		default:
-			Service.logWarn("Unknown Vote Response");
+			Service.logWarn("Unknown Vote Response " + response);
 			break;
 		}
 

@@ -27,7 +27,7 @@ public class DistrictServer extends Server {
 	private boolean electionStart = false;
 	private boolean electionStop = false;
 	private int numVotes = 0;
-	private static int MAX_NUM_VOTES = 10;
+	private static int MAX_NUM_VOTES = 2;
 
 
 	public DistrictServer(String file) {
