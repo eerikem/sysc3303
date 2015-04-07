@@ -20,7 +20,9 @@ public class DistrictServer extends Server {
 	private static String DEFAULT_HOST_MAIN = "localhost";
 	private Connector connector;
 	private Connection mainConnection;
-
+	private String district = "Ottawa";
+	
+	
 	public DistrictServer(String file) {
 		super(file, DISTRICT_SERVER_PORT);
 		Service.logInfo("binding to port "+DISTRICT_SERVER_PORT);
@@ -101,6 +103,10 @@ public class DistrictServer extends Server {
 	
 	public Connection getMainConnection(){
 		return mainConnection;
+	}
+	
+	public String getDistrictName(){
+		return district;
 	}
 	
 	public ConcurrentHashMap<String, Voter> getUsers(){

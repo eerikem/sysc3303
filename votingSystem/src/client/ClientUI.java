@@ -14,6 +14,7 @@ import java.util.Arrays;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -33,6 +34,7 @@ public class ClientUI extends JFrame implements ActionListener {
 	private JTextField userField;
 	private JPasswordField passField;
 	private JTextField nameField;
+	private JTextField addressField;
 	private JButton voteButton;
 	private JButton loginButton;
 	private JButton registerButton;
@@ -73,7 +75,19 @@ public class ClientUI extends JFrame implements ActionListener {
 		nameField.setColumns(17);
 		nameField.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		
+		
+		addressField = new JTextField();
+		addressField.setColumns(17);
+		addressField.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		
+		//TODO delete default address
+		addressField.setText("Ottawa");
+		
+		regPanel.add(new JLabel("name"));
 		regPanel.add(nameField);
+		
+		regPanel.add(new JLabel("address"));
+		regPanel.add(addressField);
 		
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
@@ -131,7 +145,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		this.pack();
 	}
 	
-	private void enableLogin(){
+	public void enableLogin(){
 		Container pane = this.getContentPane();
 		pane.removeAll();
 		pane.add(loginPanel);
@@ -145,6 +159,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		pane.add(votePanel);
 		this.pack();
 	}
+	
 	public void disableVoting(){
 		Container pane = this.getContentPane();
 		pane.removeAll();
@@ -191,12 +206,12 @@ public class ClientUI extends JFrame implements ActionListener {
 		String user = userField.getText().trim();
 		String pass = new String(passField.getPassword());
 		String name = nameField.getText().trim();
+		String address = addressField.getText().trim();
 		
 		if(!user.isEmpty() && !pass.isEmpty() && pass!=null && !name.isEmpty()){
-			Voter p = new Voter(name, user, pass);
+			Voter p = new Voter(name, user, pass, address);
 			client.register(p);
 		}
-			
 	}
 	
 	private void handleLogin(){

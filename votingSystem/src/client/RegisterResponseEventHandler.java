@@ -24,10 +24,13 @@ public class RegisterResponseEventHandler implements EventHandler {
 		case "registration_success":
 			Service.logInfo("registered with server.");
 			//TODO seperate login GUI?
-			//client.enableLogin();
+			client.enableLogin();
+			break;
+		case "district_mismatch":
+			Service.logInfo("Attempt to log into incorrect district");
 			break;
 		default:
-			Service.logWarn("Unknown Login Response");
+			Service.logWarn("Unknown Registration Response: " + response);
 			break;
 		}
 
