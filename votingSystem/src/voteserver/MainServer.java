@@ -113,7 +113,16 @@ public class MainServer extends Server {
 	}
 	
 	public void stopElection(){
-		
+		votingEnabled = false;
+			
+		try {
+			Event e = new Event("STOPELECTION");
+			for (Address key : connections.keySet()){
+				connections.get(key).sendEvent(e);
+			}
+		} catch (IOException e) {
+			Service.logError("Error Sending Event: " + e.toString());
+		}
 	}
 	
 	public boolean updateVotes(ConcurrentHashMap<String,Integer> v){

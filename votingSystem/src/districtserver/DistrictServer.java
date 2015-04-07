@@ -20,6 +20,10 @@ public class DistrictServer extends Server {
 	private static String DEFAULT_HOST_MAIN = "localhost";
 	private Connector connector;
 	private Connection mainConnection;
+	private boolean electionStart = false;
+	private boolean electionStop = false;
+	private int numVotes = 0;
+	private static int MAX_NUM_VOTES = 10;
 
 	public DistrictServer(String file) {
 		super(file, DISTRICT_SERVER_PORT);
@@ -75,8 +79,12 @@ public class DistrictServer extends Server {
 			votesToUpdate.put(vote, 1);
 			totalVotes.put(vote, 1);
 		}
+		numVotes++;
 		Service.logInfo(votesToUpdate.get(vote) + " votes for "+ vote);
-		this.updateMainServer();
+		if(numVotes >= MAX_NUM_VOTES){
+			this.updateMainServer();
+			numVotes = 0;
+		}
 		return true;
 	}
 	
@@ -97,6 +105,22 @@ public class DistrictServer extends Server {
 		}
 		
 		return true;
+	}
+	
+	public void startElection(){
+		electionStart = true;
+	}
+	
+	public void stopElection(){
+		electionStop = true;
+	}
+	
+	public boolean getElectionStart(){
+		return electionStart;
+	}
+	
+	public boolean getElectionStop(){
+		return electionStop;
 	}
 	
 	public Connection getMainConnection(){

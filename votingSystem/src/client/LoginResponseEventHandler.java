@@ -39,6 +39,12 @@ public class LoginResponseEventHandler implements EventHandler {
 		case "already_voted":
 			Service.logInfo("You have already voted.");
 			break;
+		case "election_not_started":
+			Service.logInfo("Election has not started");
+			break;
+		case "election_ended":
+			Service.logInfo("Election has ended");
+			break;	
 		default:
 			Service.logWarn("Unknown Login Response");
 			break;
