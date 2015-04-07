@@ -1,13 +1,16 @@
 package voteserver;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import common.Address;
 import common.Connection;
 import common.Event;
 import common.Service;
+import common.Person.Candidate;
 import servercommon.Server;
 
 public class MainServer extends Server {
@@ -42,15 +45,19 @@ public class MainServer extends Server {
 		MainServer server = new MainServer(cfgFile);
 		
 		
-		server.run();
-		
+		try {
+			server.run();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
-
-	public void run() {
-		startElection();
+	
+	public void run() throws FileNotFoundException {
 		while (true) {
 			try {
 				Connection connection = acceptor.accept();
+				//This connect is an arrayList
 				connections.put(connection.getDest(), connection);
 				Thread t = new Thread(connection);
 				t.start();
@@ -62,23 +69,49 @@ public class MainServer extends Server {
 		}
 	}
 	
-	public void startElection()
+	public void startElection() throws FileNotFoundException
 	{
 		votingEnabled = true;
-		/*try {
+		ReadAndSendCandidateList();		
+		try {
 			Event e = new Event("STARTELECTION");
 			for (Address key : connections.keySet()){
 				connections.get(key).sendEvent(e);
 			}
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
-		}*/
+		}
 		PeriodicPostThread predict = new PeriodicPostThread(this);
 		predict.start();
 	}
 	
+	@SuppressWarnings("unused")
+	public ArrayList<Candidate> ReadAndSendCandidateList() throws FileNotFoundException {
+		ElectionCandidates elec = new ElectionCandidates("votingSystem/src/voteserver/log.txt");
+		try {
+			Event e = new Event("ANNOUNCECANDIDATES");
+			e.put("can", elec);
+			for(Address key: connections.keySet()){
+				connections.get(key).sendEvent(e);
+			}
+		} catch (IOException e) {
+			Service.logError("Error Sending Event: " + e.toString());
+		}
+		return null; //elec.parseLog();
+	}
+
+	
 	public void stopElection(){
-		
+		votingEnabled = false;
+			
+		try {
+			Event e = new Event("STOPELECTION");
+			for (Address key : connections.keySet()){
+				connections.get(key).sendEvent(e);
+			}
+		} catch (IOException e) {
+			Service.logError("Error Sending Event: " + e.toString());
+		}
 	}
 	
 	public boolean updateVotes(HashMap<String,Integer> v){

@@ -6,7 +6,7 @@ import common.Address;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
-import common.Person;
+import common.Voter;
 import common.Service;
 
 
@@ -27,8 +27,12 @@ public class VoteEventHandler implements EventHandler {
 			e1.put("response", "blank_vote");
 			Service.logWarn("Vote attempt: blank vote");
 		}
+		else if(!server.getElectionStop()){
+			e1.put("response", "election_ended");
+			Service.logInfo("Election has ended");
+		}
 		else{
-			Person voter = (Person) e.get("person");
+			Voter voter = (Voter) e.get("person");
 			if(server.getUsers().get(voter.username).voted){
 				e1.put("response", "already_voted");
 			}else{

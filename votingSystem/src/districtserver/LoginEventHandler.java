@@ -6,18 +6,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
-import common.Person;
+import common.Voter;
 import common.Service;
 
 public class LoginEventHandler implements EventHandler {
 
 	@Override
 	public boolean handleEvent(Event e) {
-
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
-		ConcurrentHashMap<String, Person> users = ((DistrictServer) connection
-				.getService()).getUsers();
+		DistrictServer server = (DistrictServer) connection.getService();
+		Boolean start = server.getElectionStart();
+		Boolean stop = server.getElectionStop();
+		ConcurrentHashMap<String, Voter> users = server.getUsers();
 
 		String username = (String) e.get("username");
 		String password = (String) e.get("password");
@@ -40,7 +41,18 @@ public class LoginEventHandler implements EventHandler {
 				e1.put("response", "incorrect_password");
 				Service.logInfo(username + " wrong password.");
 			}
-		}else{
+		}
+		else if (!start){
+			e1.put("response", "election_not_started");
+			Service.logInfo("Election has not started");
+		}
+		else if (stop){
+			e1.put("response",  "election_ended");
+			Service.logInfo("Election has eneded");
+		}
+		
+		
+		else{
 			e1.put("response", "user_unregistered");
 			//users.put(username, password);
 			Service.logInfo("Received login event from " + username);

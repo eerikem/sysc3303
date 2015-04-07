@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import common.Person;
+import common.Voter;
 import common.Service;
 
 public class ClientTester {
@@ -36,14 +36,14 @@ public class ClientTester {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(testFile));
 			String line;
-			ArrayList<Person> people = new ArrayList<Person>();
+			ArrayList<Voter> people = new ArrayList<Voter>();
 			Pattern p = Pattern.compile("(\\w+).(\\w+)");
 			while ((line = br.readLine()) != null) {
 				Matcher m = p.matcher(line);
 				Service.logInfo("reading line: " + line);
 				if (m.find()) {
 					Service.logInfo("found smthng in " + m.group(2));
-					Person voter = new Person(line, m.group(1), m.group(2));
+					Voter voter = new Voter(line, m.group(1), m.group(2));
 					people.add(voter);
 					Client c = new Client(DEFAULT_cfgFILE, name);
 					c.enableTestMode();
@@ -59,7 +59,7 @@ public class ClientTester {
 			for (int j = 0; j < 90; j++) {
 				
 				for (int i = 0; i < people.size(); i++) {
-					Person voter = people.get(i);
+					Voter voter = people.get(i);
 					voter.username = voter.username.concat(Integer.toString(i)+1000*t.nextInt(20));
 					tester.clients.get(i).register(voter);
 				}

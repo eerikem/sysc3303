@@ -7,13 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import servercommon.Server;
 import common.Connection;
 import common.Connector;
-import common.Person;
+import common.Voter;
 import common.Event;
 import common.Service;
 
 public class DistrictServer extends Server {
 
-	private ConcurrentHashMap<String, Person> users;
+	private ConcurrentHashMap<String, Voter> users;
 	private ConcurrentHashMap<String, Integer> votesToUpdate;
 	private ConcurrentHashMap<String, Integer> totalVotes;
 	private static int DISTRICT_SERVER_PORT = 9090;
@@ -24,46 +24,47 @@ public class DistrictServer extends Server {
 	
 	protected DistrictTimeout districtTimeout;
 
+	private boolean electionStart = false;
+	private boolean electionStop = false;
+	private int numVotes = 0;
+	private static int MAX_NUM_VOTES = 10;
+
+
 	public DistrictServer(String file) {
 		super(file, DISTRICT_SERVER_PORT);
 		Service.logInfo("binding to port "+DISTRICT_SERVER_PORT);
 		connector = new Connector(this);
-		
-		this.users = new ConcurrentHashMap<String, Person>();
+		this.users = new ConcurrentHashMap<String, Voter>();
 		this.votesToUpdate = new ConcurrentHashMap<String,Integer>();
 		this.totalVotes = new ConcurrentHashMap<String,Integer>();
 	}
 
 	public static void main(String[] args) {
-
 		// Default in case no args
 		String cfgFile = "votingSystem/src/districtserver/server.cfg";
-
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-c")) {
 				cfgFile = args[++i];
 			}
 		}
-
 		// Create and start Server
 		DistrictServer server = new DistrictServer(cfgFile);
 		server.run();
 	}
 
 	public void run() {
-		
 		try {
 			mainConnection = connector.connect(DEFAULT_HOST_MAIN, MAIN_SERVER_PORT);
-			Thread t = new Thread(connection);
+			Thread t = new Thread(mainConnection);
 			t.start();
 		} catch (ClassNotFoundException | IOException e1) {
 			e1.printStackTrace();
 		}
-		
 		while (true) {
 			try {
 				Connection connection = acceptor.accept();
 				Thread t = new Thread(connection);
+				connections.put(connection.getDest(), connection);
 				t.start();
 			} catch (IOException e) {
 				Service.logError("Server Connection Error");
@@ -83,9 +84,12 @@ public class DistrictServer extends Server {
 			votesToUpdate.put(vote, 1);
 			totalVotes.put(vote, 1);
 		}
+		numVotes++;
 		Service.logInfo(votesToUpdate.get(vote) + " votes for "+ vote);
-		
-		this.updateMainServer();
+		if(numVotes >= MAX_NUM_VOTES){
+			this.updateMainServer();
+			numVotes = 0;
+		}
 		return true;
 	}
 	
@@ -105,18 +109,35 @@ public class DistrictServer extends Server {
 		return true;
 	}
 	
+
 	public void serverUpdated(HashMap<String, Integer> updatedVotes)
 	{
 		for(String key: updatedVotes.keySet()){
 			votesToUpdate.put(key, votesToUpdate.get(key)- updatedVotes.get(key));
 		}
 	}
+
+	public void startElection(){
+		electionStart = true;
+	}
+	
+	public void stopElection(){
+		electionStop = true;
+	}
+	
+	public boolean getElectionStart(){
+		return electionStart;
+	}
+	
+	public boolean getElectionStop(){
+		return electionStop;
+	}
 	
 	public Connection getMainConnection(){
 		return mainConnection;
 	}
 	
-	public ConcurrentHashMap<String, Person> getUsers(){
+	public ConcurrentHashMap<String, Voter> getUsers(){
 		return users;
 	}
 	
