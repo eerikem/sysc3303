@@ -1,6 +1,7 @@
 package districtserver;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import servercommon.Server;
@@ -20,6 +21,8 @@ public class DistrictServer extends Server {
 	private static String DEFAULT_HOST_MAIN = "localhost";
 	private Connector connector;
 	private Connection mainConnection;
+	
+	protected DistrictTimeout districtTimeout;
 
 	public DistrictServer(String file) {
 		super(file, DISTRICT_SERVER_PORT);
@@ -92,17 +95,21 @@ public class DistrictServer extends Server {
 			Event e = new Event("UPDATEVOTES");
 			e.put("votes", votesToUpdate);
 			
-			mainConnection.sendEvent(e);
+			sendEvent(e);
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
 		}
 				
-		//reset hashmap
-		for(String key: votesToUpdate.keySet()){
-			votesToUpdate.put(key, 0);
-		}
+		//reset hashmap moved to serverUpdated
 		
 		return true;
+	}
+	
+	public void serverUpdated(HashMap<String, Integer> updatedVotes)
+	{
+		for(String key: updatedVotes.keySet()){
+			votesToUpdate.put(key, votesToUpdate.get(key)- updatedVotes.get(key));
+		}
 	}
 	
 	public Connection getMainConnection(){
@@ -111,5 +118,12 @@ public class DistrictServer extends Server {
 	
 	public ConcurrentHashMap<String, Person> getUsers(){
 		return users;
+	}
+	
+	private void sendEvent(Event e) throws IOException
+	{
+		mainConnection.sendEvent(e);
+		districtTimeout = new DistrictTimeout();
+		districtTimeout.start();
 	}
 }

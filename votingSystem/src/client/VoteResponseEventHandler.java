@@ -1,8 +1,8 @@
 package client;
 
 //import common.Connection;
+import common.Connection;
 import common.Service;
-
 import common.Event;
 import common.EventHandler;
 
@@ -12,9 +12,9 @@ public class VoteResponseEventHandler implements EventHandler{
 	public boolean handleEvent(Event e) {
 
 		// Get the connection that this Handler was called on
-		//Connection connection = (Connection) e.get("connection");
-		//Client client = (Client) connection.getService();
-
+		Connection connection = (Connection) e.get("connection");
+		Client client = (Client) connection.getService();
+		client.clientTimeout.interrupt();
 		String response = (String) e.get("response");
 
 		switch (response) {

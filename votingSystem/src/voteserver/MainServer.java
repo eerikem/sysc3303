@@ -1,6 +1,7 @@
 package voteserver;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import common.Address;
@@ -80,7 +81,7 @@ public class MainServer extends Server {
 		
 	}
 	
-	public boolean updateVotes(ConcurrentHashMap<String,Integer> v){
+	public boolean updateVotes(HashMap<String,Integer> v){
 		
 		for(String key: v.keySet()){
 			if(votes.containsKey(key)){
