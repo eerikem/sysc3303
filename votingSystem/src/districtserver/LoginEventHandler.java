@@ -6,17 +6,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
-import common.Person;
+import common.Voter;
 import common.Service;
 
 public class LoginEventHandler implements EventHandler {
 
 	@Override
 	public boolean handleEvent(Event e) {
-
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
-		ConcurrentHashMap<String, Person> users = ((DistrictServer) connection
+		ConcurrentHashMap<String, Voter> users = ((DistrictServer) connection
 				.getService()).getUsers();
 
 		String username = (String) e.get("username");

@@ -72,6 +72,7 @@ public class Connection implements Runnable, Serializable {
 		while (running) {
 			try {
 				final Event e = getEvent();
+				//we can make it a queue right here, or implement semaphores
 				service.getThreadPool().execute(new Runnable() {
 					public void run() {
 						// System.out.println(Thread.currentThread().toString());

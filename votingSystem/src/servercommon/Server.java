@@ -1,5 +1,6 @@
 package servercommon;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import common.*;
@@ -11,7 +12,6 @@ public abstract class Server extends Service {
 	protected Acceptor acceptor;
 
 	protected ConcurrentHashMap<Address, Connection> connections;
-	protected Connection connection;
 	
 	public Server(String file, int port)
 	{
@@ -23,7 +23,7 @@ public abstract class Server extends Service {
 		this.connections = new ConcurrentHashMap<Address, Connection>();		
 	}
 	
-	public abstract void run();
+	public abstract void run() throws FileNotFoundException;
 
 	public ConcurrentHashMap<Address, Connection> getConnections() {
 		return connections;

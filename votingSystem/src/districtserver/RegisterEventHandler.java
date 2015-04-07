@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import common.Connection;
 import common.Event;
 import common.EventHandler;
-import common.Person;
+import common.Voter;
 import common.Service;
 
 public class RegisterEventHandler implements EventHandler {
@@ -16,10 +16,10 @@ public class RegisterEventHandler implements EventHandler {
 
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
-		ConcurrentHashMap<String, Person> users = ((DistrictServer) connection
+		ConcurrentHashMap<String, Voter> users = ((DistrictServer) connection
 				.getService()).getUsers();
 		
-		Person p = (Person)e.get("person");
+		Voter p = (Voter)e.get("person");
 
 		Event e1 = new Event("REGISTER");
 		if (users.containsKey(p.username)){
@@ -28,7 +28,7 @@ public class RegisterEventHandler implements EventHandler {
 		}else{
 			users.put(p.username, p);
 			e1.put("response", "registration_success");
-			Service.logInfo("Registered "+p.username);
+			Service.logInfo("Registered " + p.username);
 		}
 
 		try {

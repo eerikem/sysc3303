@@ -2,7 +2,7 @@ package common;
 
 import java.io.Serializable;
 
-public class Person implements Serializable{
+public class Voter implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	public String name;
@@ -11,7 +11,7 @@ public class Person implements Serializable{
 	public Address district;
 	public boolean voted;
 	
-	public Person(String name, String username, String password){
+	public Voter(String name, String username, String password){
 		this.name = name;
 		this.username = username;
 		this.password = password;
