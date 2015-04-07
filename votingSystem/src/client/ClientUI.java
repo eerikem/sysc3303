@@ -20,7 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import common.Person;
+import common.Voter;
 import common.Service;
 
 public class ClientUI extends JFrame implements ActionListener {
@@ -193,7 +193,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		String name = nameField.getText().trim();
 		
 		if(!user.isEmpty() && !pass.isEmpty() && pass!=null && !name.isEmpty()){
-			Person p = new Person(name, user, pass);
+			Voter p = new Voter(name, user, pass);
 			client.register(p);
 		}
 			

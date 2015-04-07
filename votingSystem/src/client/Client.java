@@ -5,7 +5,7 @@ import java.io.IOException;
 import common.Connection;
 import common.Connector;
 import common.Event;
-import common.Person;
+import common.Voter;
 import common.Service;
 
 public class Client extends Service {
@@ -19,7 +19,7 @@ public class Client extends Service {
 	private boolean testMode = false;
 	private ClientUI clientUI;
 	private String name;
-	private Person loggedOn;
+	private Voter loggedOn;
 
 	public Client(String file, String name) {
 		super(file);
@@ -75,7 +75,7 @@ public class Client extends Service {
 		}
 	}
 	
-	public void register(Person p){
+	public void register(Voter p){
 		try {
 			Event e = new Event("REGISTER");
 			e.put("person", p);
@@ -136,7 +136,7 @@ public class Client extends Service {
 		}
 	}
 	
-	public void setPerson(Person p)
+	public void setPerson(Voter p)
 	{
 		loggedOn = p;
 	}

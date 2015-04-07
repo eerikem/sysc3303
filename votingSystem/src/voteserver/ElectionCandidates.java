@@ -2,10 +2,13 @@ package voteserver;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ElectionCandidates {
+import common.Person.Candidate;
+
+public class ElectionCandidates implements Serializable {
 	
 	String log;
 	ArrayList<Candidate> candidate;
@@ -22,7 +25,6 @@ public class ElectionCandidates {
             System.out.println(scanner.nextLine());
         }
         scanner.close();
-
 		return null;
 	}
 	public static void main(String args[]){
