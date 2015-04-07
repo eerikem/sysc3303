@@ -2,6 +2,7 @@ package client;
 
 import java.io.IOException;
 
+import voteserver.ElectionCandidates;
 import common.Connection;
 import common.Connector;
 import common.Event;
@@ -20,6 +21,7 @@ public class Client extends Service {
 	private ClientUI clientUI;
 	private String name;
 	private Voter loggedOn;
+	public ElectionCandidates elec;
 
 	public Client(String file, String name) {
 		super(file);
@@ -125,7 +127,6 @@ public class Client extends Service {
 	}
 	public void vote(String vote) {
 		try {
-
 			Event e = new Event("VOTE");
 			e.put("vote", vote);
 			e.put("person", loggedOn);
@@ -139,5 +140,12 @@ public class Client extends Service {
 	public void setPerson(Voter p)
 	{
 		loggedOn = p;
+	}
+	
+	public void setCandidates(ElectionCandidates Elec){
+		this.elec = Elec;
+	}
+	public ElectionCandidates getCandidates(){
+		return this.elec;
 	}
 }

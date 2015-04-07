@@ -49,19 +49,16 @@ public class MainServer extends Server {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}	
 	}
-
+	
 	public void run() throws FileNotFoundException {
-//		startElection();
 		while (true) {
 			try {
 				Connection connection = acceptor.accept();
 				//This connect is an arrayList
 				connections.put(connection.getDest(), connection);
 				Thread t = new Thread(connection);
-	
 				t.start();
 			} catch (IOException e) {
 				Service.logError("Server Connection Error");
@@ -74,7 +71,7 @@ public class MainServer extends Server {
 	public void startElection() throws FileNotFoundException
 	{
 		votingEnabled = true;
-		SendCandidateList(ReadCandidateList());		
+		ReadAndSendCandidateList();		
 		try {
 			Event e = new Event("STARTELECTION");
 			for (Address key : connections.keySet()){
@@ -88,11 +85,11 @@ public class MainServer extends Server {
 	}
 	
 	@SuppressWarnings("unused")
-	public ArrayList<Candidate> ReadCandidateList() throws FileNotFoundException {
+	public ArrayList<Candidate> ReadAndSendCandidateList() throws FileNotFoundException {
 		ElectionCandidates elec = new ElectionCandidates("votingSystem/src/voteserver/log.txt");
 		try {
 			Event e = new Event("ANNOUNCECANDIDATES");
-			e.put("votes", elec);
+			e.put("can", elec);
 			for(Address key: connections.keySet()){
 				connections.get(key).sendEvent(e);
 			}
@@ -101,16 +98,7 @@ public class MainServer extends Server {
 		}
 		return null; //elec.parseLog();
 	}
-	
-	public void SendCandidateList( ArrayList<Candidate> cand) throws FileNotFoundException{
-		//This is where we need to pass it over the wire and consume it via the district server 
-		ArrayList<Candidate> candidates = ReadCandidateList();
-		//define a new devent called candidate List 
-//		for (Connection i : connections){
-//			i.send(candidate);
-//		}
-		return;
-	}
+
 	
 	public void stopElection(){
 		
