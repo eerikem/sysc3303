@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import common.Service;
+import common.Person.Candidate;
 import client.Client;
 
 
@@ -68,11 +69,14 @@ public class MainServerGUI extends JFrame implements ActionListener{
 		candidates = new ArrayList<String>(Arrays.asList(tmp));
 		candidateLabel = new ArrayList<JLabel>();
 		candidateResults = new ArrayList<JLabel>();
-		for (int i=0; i<tmp.length; i++) {
-			candidateLabel.add(new JLabel(tmp[i]));
+		ArrayList<Candidate> cand = server.getCandidates().getCandidate();
+		int i = 0;
+		for (Candidate c : cand) {
+			candidateLabel.add(new JLabel(c.getName() + " " + c.getEntity()));
 			resultsPanel.add(candidateLabel.get(i));
 			candidateResults.add(new JLabel("null"));
 			resultsPanel.add(candidateResults.get(i));
+			i++;
 		}
 	}
 

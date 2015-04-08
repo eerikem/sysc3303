@@ -29,13 +29,10 @@ public class Client extends Service {
 
 	public Client(String file, String name) {
 		super(file);
-
 		this.connector = new Connector(this);
-		
 		this.name = name;
 		clientUI = new ClientUI(this);
 		clientUI.setVisible(true);
-		
 	}
 	
 

@@ -19,22 +19,27 @@ public class MainServer extends Server {
 	private static boolean votingEnabled;
 	private int numberVotes;
 	private MainServerGUI serverGUI;
-	
+	private static ElectionCandidates elec; 
 	
 	public MainServer(String file) {
 		super(file, 9080);
 		votingEnabled = false;
 		numberVotes = 0;
+		ElectionCandidates elec = null;
 		votes = new ConcurrentHashMap<>();
 		serverGUI = new MainServerGUI(this);
 		serverGUI.setVisible(true);
 	}
 
-	public static void main(String[] args) {
+	public ElectionCandidates getCandidates(){
+		return elec;
+	}
+	public static void main(String[] args) throws FileNotFoundException {
 
 		// Default in case no args
 		String cfgFile = "votingSystem/src/voteserver/server.cfg";
-		
+		elec = new ElectionCandidates("votingSystem/src/voteserver/log.txt");
+
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-c")) {
 				cfgFile = args[++i];
@@ -87,10 +92,9 @@ public class MainServer extends Server {
 	
 	@SuppressWarnings("unused")
 	public ArrayList<Candidate> ReadAndSendCandidateList() throws FileNotFoundException {
-		ElectionCandidates elec = new ElectionCandidates("votingSystem/src/voteserver/log.txt");
 		try {
 			Event e = new Event("ANNOUNCECANDIDATES");
-			e.put("can", elec);
+			e.put("can", this.elec);
 			for(Address key: connections.keySet()){
 				connections.get(key).sendEvent(e);
 			}

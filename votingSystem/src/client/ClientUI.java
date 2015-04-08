@@ -93,7 +93,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		ArrayList<Candidate> can = elec.getCandidate();
 		buttonGroup = new ButtonGroup();
 		for (Candidate candidate : can) {
-			JRadioButton b = new JRadioButton(candidate.getName() + candidate.getEntity());
+			JRadioButton b = new JRadioButton(candidate.getName() + " " + candidate.getEntity());
 			candidateButtons.add(b);
 			buttonGroup.add(b);
 			votePanel.add(b);
