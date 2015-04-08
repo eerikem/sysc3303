@@ -117,6 +117,10 @@ public class Client extends Service {
 		clientUI.enableReg();
 	}
 	
+	public void enableLogin(){
+		clientUI.enableLogin();
+	}
+	
 	public void displaySuccess(String message) {
 		Service.logInfo(message);
 	}

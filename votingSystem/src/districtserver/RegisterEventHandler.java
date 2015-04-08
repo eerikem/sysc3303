@@ -16,8 +16,8 @@ public class RegisterEventHandler implements EventHandler {
 
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
-		ConcurrentHashMap<String, Voter> users = ((DistrictServer) connection
-				.getService()).getUsers();
+		DistrictServer server = (DistrictServer) connection.getService();
+		ConcurrentHashMap<String, Voter> users = server.getUsers();
 		
 		Voter p = (Voter)e.get("person");
 
@@ -26,9 +26,14 @@ public class RegisterEventHandler implements EventHandler {
 			e1.put("response", "already_registered");
 			Service.logWarn(p.username + " already registered.");
 		}else{
-			users.put(p.username, p);
-			e1.put("response", "registration_success");
-			Service.logInfo("Registered " + p.username);
+			if(!p.district.equals(server.getDistrictName())){
+				e1.put("response", "district_mismatch");
+				Service.logInfo("Voter lives outside of district " + p.username);
+			}else{
+				users.put(p.username, p);
+				e1.put("response", "registration_success");
+				Service.logInfo("Registered " + p.username);
+			}
 		}
 
 		try {

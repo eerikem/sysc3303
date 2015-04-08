@@ -43,7 +43,7 @@ public class ClientTester {
 				Service.logInfo("reading line: " + line);
 				if (m.find()) {
 					Service.logInfo("found smthng in " + m.group(2));
-					Voter voter = new Voter(line, m.group(1), m.group(2));
+					Voter voter = new Voter(line, m.group(1), m.group(2), "Ottawa");
 					people.add(voter);
 					Client c = new Client(DEFAULT_cfgFILE, name);
 					c.enableTestMode();

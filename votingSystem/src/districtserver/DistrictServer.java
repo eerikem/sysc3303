@@ -25,6 +25,7 @@ public class DistrictServer extends Server {
 	private Connector connector;
 	private Connection mainConnection;
 	private boolean running = true;
+	private String district = "Ottawa";
 	
 	protected DistrictTimeout districtTimeout;
 
@@ -33,6 +34,7 @@ public class DistrictServer extends Server {
 	private int numVotes = 0;
 	private static int MAX_NUM_VOTES = 1;
 	private ArrayList<Candidate> candidates;
+
 
 	public DistrictServer(String file) {
 		super(file, DISTRICT_SERVER_PORT);
@@ -179,6 +181,10 @@ public class DistrictServer extends Server {
 	
 	public void stopServer(){
 		running = false;
+	}
+	
+	public String getDistrictName(){
+		return district;
 	}
 	
 	public ConcurrentHashMap<String, Voter> getUsers(){

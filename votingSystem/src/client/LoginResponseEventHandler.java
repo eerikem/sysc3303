@@ -43,6 +43,9 @@ public class LoginResponseEventHandler implements EventHandler {
 		case "already_voted":
 			Service.logInfo("You have already voted.");
 			break;
+		case "district_mismatch":
+			Service.logInfo("Attempt to log into incorrect district");
+			break;
 		case "election_not_started":
 			Service.logInfo("Election has not started");
 			break;
@@ -50,7 +53,7 @@ public class LoginResponseEventHandler implements EventHandler {
 			Service.logInfo("Election has ended");
 			break;	
 		default:
-			Service.logWarn("Unknown Login Response");
+			Service.logWarn("Unknown Login Response: " + response);
 			break;
 		}
 
