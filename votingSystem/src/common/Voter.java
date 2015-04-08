@@ -8,14 +8,15 @@ public class Voter implements Serializable{
 	public String name;
 	public String username;
 	public String password;
-	public Address district;
+	public String district;
 	public boolean voted;
 	
-	public Voter(String name, String username, String password){
+	public Voter(String name, String username, String password, String district){
 		this.name = name;
 		this.username = username;
 		this.password = password;
 		this.voted = false;
+		this.district = district;
 	}
 	
 	public boolean hasVoted()

@@ -10,6 +10,7 @@ import java.awt.event.WindowListener;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
@@ -25,19 +26,22 @@ import client.Client;
 
 
 public class MainServerGUI extends JFrame implements ActionListener{
-	private ArrayList<JLabel> candidateLabel;
-	private ArrayList<JLabel> candidateResults;
-	private ArrayList<String> candidates;
+	private HashMap<Candidate,JLabel> candidateNames;
+	private HashMap<String,JLabel> candidateResults;
+	private HashMap<String,JLabel> partyResults;
+	private HashMap<String,JLabel> partyNames;
 	private MainServer server;
 	private JPanel resultsPanel;
 	private JPanel buttonPanel;
 	private JButton startElectionButton;
 	private JButton stopElectionButton;
+	private HashMap<String,JPanel> districtPanels;
+	
 	public MainServerGUI(MainServer server) {
 		super("Results Screen");
 		setLayout(new BorderLayout());
 		this.server = server;
-		initResultsPanel();
+		initResultsPanel(server.getElection());
 		add(resultsPanel, BorderLayout.SOUTH);
 		//button panel
 		buttonPanel = new JPanel();
@@ -62,9 +66,9 @@ public class MainServerGUI extends JFrame implements ActionListener{
 		addWindowListener(exitListener);
 }
 	
-	private void initResultsPanel(){
-		String[] tmp = { "Greens", "NDP", "Liberals", "Conservatives", "Comis" };
+	private void initResultsPanel(ElectionCandidates electionCandidates){
 		resultsPanel = new JPanel();
+<<<<<<< HEAD
 		resultsPanel.setLayout(new GridLayout(tmp.length,2));
 		candidates = new ArrayList<String>(Arrays.asList(tmp));
 		candidateLabel = new ArrayList<JLabel>();
@@ -77,17 +81,64 @@ public class MainServerGUI extends JFrame implements ActionListener{
 			candidateResults.add(new JLabel("null"));
 			resultsPanel.add(candidateResults.get(i));
 			i++;
+=======
+		resultsPanel.setLayout(new GridLayout(server.getParties().size(), 2));
+
+		candidateNames = new HashMap<Candidate, JLabel>();
+		candidateResults = new HashMap<String, JLabel>();
+		partyResults = new HashMap<String, JLabel>();
+		partyNames = new HashMap<String, JLabel>();
+		
+		districtPanels = new HashMap<String,JPanel>();
+		
+		for(Candidate c : electionCandidates.getCandidates()){
+			candidateNames.put(c, new JLabel(c.getName()+" "+c.getParty()));
+			candidateResults.put(c.getName(), new JLabel("0"));
+		}
+		
+		for(String party : server.getParties()){
+			partyNames.put(party, new JLabel(party));
+			partyResults.put(party, new JLabel("0"));
+		}
+		
+		HashMap<String, ArrayList<Candidate>> districts = electionCandidates.getDistricts();
+		for(String district: districts.keySet()){
+			JPanel panel = new JPanel();
+			ArrayList<Candidate> candidates = districts.get(district);
+			panel.setLayout(new GridLayout(candidates.size(), 2));
+			for(Candidate c:candidates){
+				panel.add(candidateNames.get(c));
+				panel.add(candidateResults.get(c.getName()));
+			}
+			districtPanels.put(district,panel);
+		}
+		
+		for (String party: server.getParties()) {
+			resultsPanel.add(partyNames.get(party));
+			resultsPanel.add(partyResults.get(party));
+>>>>>>> origin/demo
 		}
 	}
 
 
 	public void updateResults(){
-		ConcurrentHashMap<String, Integer> results = server.getVotes();
-		for(int i=0; i < candidateLabel.size(); i++){
-			if(results.containsKey(candidateLabel.get(i).getText()));{
-				candidateResults.get(i).setText(
-						String.valueOf(results.get(candidateLabel.get(i).getText())));
-			}	
+		ConcurrentHashMap<Candidate, Integer> results = server.getVotes();
+		HashMap<String,Integer> totals = new HashMap<String,Integer>();
+		for(String party:server.getParties()){
+			totals.put(party, new Integer(0));
+		}
+		
+		for(Candidate c:results.keySet()){
+			if(candidateResults.containsKey(c.getName())){
+				candidateResults.get(c.getName()).setText(
+						String.valueOf(results.get(c).toString()));
+				int i = totals.get(c.getParty()).intValue();
+				totals.put(c.getParty(),new Integer(i+1));
+			}
+		}
+		
+		for (String party:server.getParties()){
+			partyResults.get(party).setText(totals.get(party).toString());
 		}
 	}
 

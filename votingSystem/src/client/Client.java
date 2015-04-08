@@ -1,13 +1,14 @@
 package client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-import voteserver.ElectionCandidates;
 import common.Connection;
 import common.Connector;
 import common.Event;
 import common.Voter;
 import common.Service;
+import common.Person.Candidate;
 
 public class Client extends Service {
 
@@ -24,7 +25,7 @@ public class Client extends Service {
 	protected ClientTimeout clientTimeout;
 
 	private Voter loggedOn;
-	public ElectionCandidates elec;
+	public ArrayList<Candidate> elec;
 
 
 	public Client(String file, String name) {
@@ -113,6 +114,10 @@ public class Client extends Service {
 		clientUI.enableReg();
 	}
 	
+	public void enableLogin(){
+		clientUI.enableLogin();
+	}
+	
 	public void displaySuccess(String message) {
 		Service.logInfo(message);
 	}
@@ -129,10 +134,10 @@ public class Client extends Service {
 		return testMode;
 	}
 	
-	public void vote(String vote) {
+	public void vote(Candidate candidate) {
 		try {
 			Event e = new Event("VOTE");
-			e.put("vote", vote);
+			e.put("vote", candidate);
 			e.put("person", loggedOn);
 			sendEvent(e);
 
@@ -159,10 +164,10 @@ public class Client extends Service {
 		connection.sendEvent(e);
 	}
 
-	public void setCandidates(ElectionCandidates Elec){
-		this.elec = Elec;
+	public void setCandidates(ArrayList<Candidate> elec){
+		this.elec = elec;
 	}
-	public ElectionCandidates getCandidates(){
+	public ArrayList<Candidate> getCandidates(){
 		return this.elec;
 	}
 }

@@ -5,12 +5,13 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import common.Service;
+import common.Person.Candidate;
 
 public class PeriodicPostThread extends Thread{
 	
 	private MainServer main;
-	private HashMap<String, Integer> votePoint;
-	private ArrayList<HashMap<String, Integer>> votePlot;
+	private HashMap<Candidate, Integer> votePoint;
+	private ArrayList<HashMap<Candidate, Integer>> votePlot;
 	private int prevNumVotes;
 	
 	public PeriodicPostThread(MainServer server)
@@ -51,9 +52,9 @@ public class PeriodicPostThread extends Thread{
 	{
 		String incombentCandidate = "No one";
 		Integer bestVoteDif = 0;
-		HashMap<String, Integer> candidateList = votePlot.get(votePlot.indexOf(votePoint)-1);
+		HashMap<Candidate, Integer> candidateList = votePlot.get(votePlot.indexOf(votePoint)-1);
 
-		for(String cand: votePoint.keySet())
+		for(Candidate cand: votePoint.keySet())
 		{
 			if(!candidateList.containsKey(cand))
 			{
@@ -64,7 +65,7 @@ public class PeriodicPostThread extends Thread{
 			if(voteDif > bestVoteDif)
 			{
 				bestVoteDif = voteDif;
-				incombentCandidate = cand;
+				incombentCandidate = cand.getParty();
 			}
 		}
 		return incombentCandidate;
@@ -75,13 +76,13 @@ public class PeriodicPostThread extends Thread{
 		String incombentCandidate = "No one";
 		Integer mostVotes = 0;
 		
-		for(String cand: votePoint.keySet())
+		for(Candidate cand: votePoint.keySet())
 		{
 			Integer candVotes = votePoint.get(cand);
 			if(candVotes > mostVotes)
 			{
 				mostVotes = candVotes;
-				incombentCandidate = cand;
+				incombentCandidate = cand.getParty();
 			}
 		}
 		return incombentCandidate;
@@ -92,13 +93,13 @@ public class PeriodicPostThread extends Thread{
 		String incombentCandidate = "No one";
 		Integer mostVotes = 0;
 		Integer allVotes = _getSum(votePoint.values());
-		for(String cand: votePoint.keySet())
+		for(Candidate cand: votePoint.keySet())
 		{
 			Integer candVotes = votePoint.get(cand);
 			if(candVotes > new Integer(allVotes) - candVotes)
 			{
 				mostVotes = candVotes;
-				incombentCandidate = cand;
+				incombentCandidate = cand.getParty();
 			}
 		}
 		return incombentCandidate;

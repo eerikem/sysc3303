@@ -9,18 +9,18 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import voteserver.ElectionCandidates;
 import common.Voter;
 import common.Service;
 import common.Person.Candidate;
@@ -31,18 +31,19 @@ public class ClientUI extends JFrame implements ActionListener {
 	private Client client;
 
 	// UI Variables
-	private static ArrayList<JRadioButton> candidateButtons;
+	private ArrayList<JRadioButton> candidateButtons;
 	private JTextField userField;
 	private JPasswordField passField;
 	private JTextField nameField;
+	private JTextField addressField;
 	private JButton voteButton;
 	private JButton loginButton;
 	private JButton registerButton;
-	private ArrayList<String> candidates;
 	private ButtonGroup buttonGroup;
 	private JPanel votePanel;
 	private JPanel loginPanel;
 	private JPanel regPanel;
+	private HashMap<JRadioButton, Candidate> buttonMap;
 	
 	public ClientUI(Client client) {
 		super("Voting System");
@@ -74,7 +75,19 @@ public class ClientUI extends JFrame implements ActionListener {
 		nameField.setColumns(17);
 		nameField.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		
+		
+		addressField = new JTextField();
+		addressField.setColumns(17);
+		addressField.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		
+		//TODO delete default address
+		addressField.setText("Ottawa");
+		
+		regPanel.add(new JLabel("name"));
 		regPanel.add(nameField);
+		
+		regPanel.add(new JLabel("address"));
+		regPanel.add(addressField);
 		
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
@@ -83,17 +96,18 @@ public class ClientUI extends JFrame implements ActionListener {
 		regPanel.setLayout(new FlowLayout());
 	}
 	
-	private void initVotePanel(){
-		// TODO get candidates from client
-		String[] tmp = { "Greens", "NDP", "Liberals", "Conservatives", "Comis" };
-		ElectionCandidates elec = client.getCandidates();
-		candidates = new ArrayList<String>(Arrays.asList(tmp));
+	private void initVotePanel(ArrayList<Candidate> can){
 		candidateButtons = new ArrayList<JRadioButton>();
+		buttonMap = new HashMap<JRadioButton, Candidate>();
 		votePanel = new JPanel();
-		ArrayList<Candidate> can = elec.getCandidate();
 		buttonGroup = new ButtonGroup();
 		for (Candidate candidate : can) {
+<<<<<<< HEAD
 			JRadioButton b = new JRadioButton(candidate.getName() + " " + candidate.getEntity());
+=======
+			JRadioButton b = new JRadioButton(candidate.getName() + " " + candidate.getParty());
+			buttonMap.put(b, candidate);
+>>>>>>> origin/demo
 			candidateButtons.add(b);
 			buttonGroup.add(b);
 			votePanel.add(b);
@@ -132,7 +146,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		this.pack();
 	}
 	
-	private void enableLogin(){
+	public void enableLogin(){
 		Container pane = this.getContentPane();
 		pane.removeAll();
 		pane.add(loginPanel);
@@ -144,13 +158,14 @@ public class ClientUI extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Election Has Not Started. Please Try again later");
 			return;
 		}
-		initVotePanel();
+		initVotePanel(client.getCandidates());
 		Container pane = this.getContentPane();
 		pane.removeAll();
 		buttonGroup.clearSelection();
 		pane.add(votePanel);
 		this.pack();
 	}
+	
 	public void disableVoting(){
 		Container pane = this.getContentPane();
 		pane.removeAll();
@@ -181,7 +196,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		if (e.getSource() == voteButton) {
 			for (JRadioButton b : candidateButtons) {
 				if (b.isSelected()) {
-					client.vote(b.getText());
+					client.vote(buttonMap.get(b));
 					Service.logInfo("Client voted for the " + b.getText());
 					disableVoting();
 				}
@@ -197,12 +212,12 @@ public class ClientUI extends JFrame implements ActionListener {
 		String user = userField.getText().trim();
 		String pass = new String(passField.getPassword());
 		String name = nameField.getText().trim();
+		String address = addressField.getText().trim();
 		
 		if(!user.isEmpty() && !pass.isEmpty() && pass!=null && !name.isEmpty()){
-			Voter p = new Voter(name, user, pass);
+			Voter p = new Voter(name, user, pass, address);
 			client.register(p);
 		}
-			
 	}
 	
 	private void handleLogin(){

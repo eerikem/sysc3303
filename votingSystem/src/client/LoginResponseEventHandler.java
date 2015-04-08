@@ -1,10 +1,13 @@
 package client;
 
+import java.util.ArrayList;
+
 import common.Connection;
 import common.Event;
 import common.EventHandler;
 import common.Voter;
 import common.Service;
+import common.Person.Candidate;
 import client.Client;
 
 public class LoginResponseEventHandler implements EventHandler {
@@ -24,6 +27,7 @@ public class LoginResponseEventHandler implements EventHandler {
 			break;
 		case "login_success":
 			client.setPerson((Voter) e.get("person"));
+			client.setCandidates((ArrayList<Candidate>) e.get("candidates"));
 			client.vote();
 			break;
 		case "incorrect_password":
@@ -39,6 +43,9 @@ public class LoginResponseEventHandler implements EventHandler {
 		case "already_voted":
 			Service.logInfo("You have already voted.");
 			break;
+		case "district_mismatch":
+			Service.logInfo("Attempt to log into incorrect district");
+			break;
 		case "election_not_started":
 			Service.logInfo("Election has not started");
 			break;
@@ -46,7 +53,7 @@ public class LoginResponseEventHandler implements EventHandler {
 			Service.logInfo("Election has ended");
 			break;	
 		default:
-			Service.logWarn("Unknown Login Response");
+			Service.logWarn("Unknown Login Response: " + response);
 			break;
 		}
 
