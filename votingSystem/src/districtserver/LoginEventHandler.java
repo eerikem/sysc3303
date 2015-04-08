@@ -16,8 +16,8 @@ public class LoginEventHandler implements EventHandler {
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
 		DistrictServer server = (DistrictServer) connection.getService();
-		Boolean start = server.getElectionStart();
-		Boolean stop = server.getElectionStop();
+		Boolean start = server.electionStarted();
+		Boolean stop = server.electionStopped();
 		ConcurrentHashMap<String, Voter> users = server.getUsers();
 
 		String username = (String) e.get("username");
@@ -35,6 +35,7 @@ public class LoginEventHandler implements EventHandler {
 			}
 			else if(password.equals(users.get(username).password)) {
 				e1.put("response", "login_success");
+				e1.put("candidates", server.getCandidates());
 				e1.put("person", users.get(username));
 				Service.logInfo(username + " logged in.");
 			} else {

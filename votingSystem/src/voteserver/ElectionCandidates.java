@@ -4,18 +4,37 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import common.Person.Candidate;
 
 public class ElectionCandidates implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	public String log;
-	private ArrayList<Candidate> candidate;
-	public ElectionCandidates(String logfile) throws FileNotFoundException{
+	private ArrayList<Candidate> candidates;
+	private HashMap<String,ArrayList<Candidate>> districts; 
+	
+	public ElectionCandidates(String logfile) {
 		log = logfile;
-		candidate = new ArrayList<Candidate>();
-		parseLog();
+		districts = new HashMap<String,ArrayList<Candidate>>();
+		candidates = new ArrayList<Candidate>();
+		try {
+			parseLog();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		for(Candidate c: candidates){
+			if(districts.containsKey(c.getDistrict())){
+				districts.get(c.getDistrict()).add(c);
+			} else {
+				ArrayList<Candidate> list = new ArrayList<Candidate>();
+				list.add(c);
+				districts.put(c.getDistrict(),list);
+			}
+		}
 	}
 	
 	public ArrayList<Candidate> parseLog() throws FileNotFoundException {
@@ -25,26 +44,21 @@ public class ElectionCandidates implements Serializable {
         while(scanner.hasNextLine()){
             String line = scanner.nextLine();
             String []ret = line.split(",");
-            candidate.add(new Candidate(ret[0],ret[1],ret[2]));            
+            candidates.add(new Candidate(ret[0].trim(),ret[1].trim(),ret[2].trim()));            
         }
         scanner.close();
 		return null;
 	}
-	public static void main(String args[]){
-		try {
-			ElectionCandidates el = new ElectionCandidates("votingSystem/src/voteserver/log.txt");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+	public ArrayList<Candidate> getCandidates() {
+		return candidates;
 	}
 
-	public ArrayList<Candidate> getCandidate() {
-		return candidate;
+	public void setCandidate(ArrayList<Candidate> candidates) {
+		this.candidates = candidates;
 	}
-
-	public void setCandidate(ArrayList<Candidate> candidate) {
-		this.candidate = candidate;
+	
+	public HashMap<String,ArrayList<Candidate>> getDistricts(){
+		return districts;
 	}
 }

@@ -1,10 +1,13 @@
 package client;
 
+import java.util.ArrayList;
+
 import common.Connection;
 import common.Event;
 import common.EventHandler;
 import common.Voter;
 import common.Service;
+import common.Person.Candidate;
 import client.Client;
 
 public class LoginResponseEventHandler implements EventHandler {
@@ -24,6 +27,7 @@ public class LoginResponseEventHandler implements EventHandler {
 			break;
 		case "login_success":
 			client.setPerson((Voter) e.get("person"));
+			client.setCandidates((ArrayList<Candidate>) e.get("candidates"));
 			client.vote();
 			break;
 		case "incorrect_password":

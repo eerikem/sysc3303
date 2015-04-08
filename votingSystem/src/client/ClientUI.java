@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -20,7 +20,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import voteserver.ElectionCandidates;
 import common.Voter;
 import common.Service;
 import common.Person.Candidate;
@@ -31,18 +30,18 @@ public class ClientUI extends JFrame implements ActionListener {
 	private Client client;
 
 	// UI Variables
-	private static ArrayList<JRadioButton> candidateButtons;
+	private ArrayList<JRadioButton> candidateButtons;
 	private JTextField userField;
 	private JPasswordField passField;
 	private JTextField nameField;
 	private JButton voteButton;
 	private JButton loginButton;
 	private JButton registerButton;
-	private ArrayList<String> candidates;
 	private ButtonGroup buttonGroup;
 	private JPanel votePanel;
 	private JPanel loginPanel;
 	private JPanel regPanel;
+	private HashMap<JRadioButton, Candidate> buttonMap;
 	
 	public ClientUI(Client client) {
 		super("Voting System");
@@ -83,17 +82,14 @@ public class ClientUI extends JFrame implements ActionListener {
 		regPanel.setLayout(new FlowLayout());
 	}
 	
-	private void initVotePanel(){
-		// TODO get candidates from client
-		String[] tmp = { "Greens", "NDP", "Liberals", "Conservatives", "Comis" };
-		ElectionCandidates elec = client.getCandidates();
-		candidates = new ArrayList<String>(Arrays.asList(tmp));
+	private void initVotePanel(ArrayList<Candidate> can){
 		candidateButtons = new ArrayList<JRadioButton>();
+		buttonMap = new HashMap<JRadioButton, Candidate>();
 		votePanel = new JPanel();
-		ArrayList<Candidate> can = elec.getCandidate();
 		buttonGroup = new ButtonGroup();
 		for (Candidate candidate : can) {
-			JRadioButton b = new JRadioButton(candidate.getName() + candidate.getEntity());
+			JRadioButton b = new JRadioButton(candidate.getName() + " " + candidate.getParty());
+			buttonMap.put(b, candidate);
 			candidateButtons.add(b);
 			buttonGroup.add(b);
 			votePanel.add(b);
@@ -144,7 +140,7 @@ public class ClientUI extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Election Has Not Started. Please Try again later");
 			return;
 		}
-		initVotePanel();
+		initVotePanel(client.getCandidates());
 		Container pane = this.getContentPane();
 		pane.removeAll();
 		buttonGroup.clearSelection();
@@ -181,7 +177,7 @@ public class ClientUI extends JFrame implements ActionListener {
 		if (e.getSource() == voteButton) {
 			for (JRadioButton b : candidateButtons) {
 				if (b.isSelected()) {
-					client.vote(b.getText());
+					client.vote(buttonMap.get(b));
 					Service.logInfo("Client voted for the " + b.getText());
 					disableVoting();
 				}

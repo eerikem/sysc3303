@@ -77,7 +77,7 @@ public class ClientTester {
 				String[] tmp = { "Greens", "NDP", "Liberals", "Conservatives",
 						"Comis" };
 				for (int i = 0; i < people.size(); i++) {
-					tester.clients.get(i).vote(tmp[r.nextInt(tmp.length)]);
+				//	tester.clients.get(i).vote(tmp[r.nextInt(tmp.length)]);
 					Thread.sleep(20);
 				}
 

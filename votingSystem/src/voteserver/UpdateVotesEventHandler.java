@@ -9,6 +9,7 @@ import common.EventHandler;
 import common.Service;
 import common.Address;
 import common.Connection;
+import common.Person.Candidate;
 import districtserver.DistrictServer;
 
 public class UpdateVotesEventHandler implements EventHandler{
@@ -19,9 +20,9 @@ public class UpdateVotesEventHandler implements EventHandler{
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");		
 
-		ConcurrentHashMap<String, Integer> votes = (ConcurrentHashMap<String, Integer>) e.get("votes");
+		ConcurrentHashMap<Candidate, Integer> votes = (ConcurrentHashMap<Candidate, Integer>) e.get("votes");
 		
-		HashMap<String, Integer> hashMap = new HashMap<String, Integer>(votes);
+		HashMap<Candidate, Integer> hashMap = new HashMap<Candidate, Integer>(votes);
 		((MainServer) connection.getService()).updateVotes(hashMap);
 
 		//Send reply event

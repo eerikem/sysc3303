@@ -8,6 +8,7 @@ import common.Event;
 import common.EventHandler;
 import common.Voter;
 import common.Service;
+import common.Person.Candidate;
 
 
 public class VoteEventHandler implements EventHandler {
@@ -19,7 +20,7 @@ public class VoteEventHandler implements EventHandler {
 		Connection connection = (Connection) e.get("connection");
 		DistrictServer server = (DistrictServer)connection.getService();
 				
-		String vote = (String) e.get("vote");
+		Candidate vote = (Candidate) e.get("vote");
 		
 		Event e1 = new Event("VOTEREPLY");
 		
@@ -27,7 +28,7 @@ public class VoteEventHandler implements EventHandler {
 			e1.put("response", "blank_vote");
 			Service.logWarn("Vote attempt: blank vote");
 		}
-		else if(!server.getElectionStop()){
+		else if(server.electionStopped()){
 			e1.put("response", "election_ended");
 			Service.logInfo("Election has ended");
 		}
