@@ -1,6 +1,7 @@
 package districtserver;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import servercommon.Server;
@@ -22,12 +23,18 @@ public class DistrictServer extends Server {
 	private Connection mainConnection;
 	private String district = "Ottawa";
 	
-	
+	protected DistrictTimeout districtTimeout;
+
+	private boolean electionStart = false;
+	private boolean electionStop = false;
+	private int numVotes = 0;
+	private static int MAX_NUM_VOTES = 2;
+
+
 	public DistrictServer(String file) {
 		super(file, DISTRICT_SERVER_PORT);
 		Service.logInfo("binding to port "+DISTRICT_SERVER_PORT);
 		connector = new Connector(this);
-		
 		this.users = new ConcurrentHashMap<String, Voter>();
 		this.votesToUpdate = new ConcurrentHashMap<String,Integer>();
 		this.totalVotes = new ConcurrentHashMap<String,Integer>();
@@ -58,6 +65,7 @@ public class DistrictServer extends Server {
 			try {
 				Connection connection = acceptor.accept();
 				Thread t = new Thread(connection);
+				connections.put(connection.getDest(), connection);
 				t.start();
 			} catch (IOException e) {
 				Service.logError("Server Connection Error");
@@ -77,8 +85,12 @@ public class DistrictServer extends Server {
 			votesToUpdate.put(vote, 1);
 			totalVotes.put(vote, 1);
 		}
+		numVotes++;
 		Service.logInfo(votesToUpdate.get(vote) + " votes for "+ vote);
-		this.updateMainServer();
+		if(numVotes >= MAX_NUM_VOTES){
+			this.updateMainServer();
+			numVotes = 0;
+		}
 		return true;
 	}
 	
@@ -88,17 +100,38 @@ public class DistrictServer extends Server {
 			Event e = new Event("UPDATEVOTES");
 			e.put("votes", votesToUpdate);
 			
-			mainConnection.sendEvent(e);
+			sendEvent(e);
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
 		}
 				
-		//reset hashmap
-		for(String key: votesToUpdate.keySet()){
-			votesToUpdate.put(key, 0);
-		}
+		//reset hashmap moved to serverUpdated
 		
 		return true;
+	}
+	
+
+	public void serverUpdated(HashMap<String, Integer> updatedVotes)
+	{
+		for(String key: updatedVotes.keySet()){
+			votesToUpdate.put(key, votesToUpdate.get(key)- updatedVotes.get(key));
+		}
+	}
+
+	public void startElection(){
+		electionStart = true;
+	}
+	
+	public void stopElection(){
+		electionStop = true;
+	}
+	
+	public boolean getElectionStart(){
+		return electionStart;
+	}
+	
+	public boolean getElectionStop(){
+		return electionStop;
 	}
 	
 	public Connection getMainConnection(){
@@ -111,5 +144,12 @@ public class DistrictServer extends Server {
 	
 	public ConcurrentHashMap<String, Voter> getUsers(){
 		return users;
+	}
+	
+	private void sendEvent(Event e) throws IOException
+	{
+		mainConnection.sendEvent(e);
+		districtTimeout = new DistrictTimeout();
+		districtTimeout.start();
 	}
 }

@@ -2,6 +2,7 @@ package client;
 
 import java.io.IOException;
 
+import voteserver.ElectionCandidates;
 import common.Connection;
 import common.Connector;
 import common.Event;
@@ -19,7 +20,12 @@ public class Client extends Service {
 	private boolean testMode = false;
 	private ClientUI clientUI;
 	private String name;
+
+	protected ClientTimeout clientTimeout;
+
 	private Voter loggedOn;
+	public ElectionCandidates elec;
+
 
 	public Client(String file, String name) {
 		super(file);
@@ -29,7 +35,9 @@ public class Client extends Service {
 		this.name = name;
 		clientUI = new ClientUI(this);
 		clientUI.setVisible(true);
+		
 	}
+	
 
 	public static void main(String[] args) {
 
@@ -69,7 +77,7 @@ public class Client extends Service {
 			e.put("username", user);
 			e.put("password", password);
 
-			connection.sendEvent(e);
+			sendEvent(e);
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
 		}
@@ -79,7 +87,7 @@ public class Client extends Service {
 		try {
 			Event e = new Event("REGISTER");
 			e.put("person", p);
-			connection.sendEvent(e);
+			sendEvent(e);
 		} catch (IOException e) {
 			Service.logError("Error Sending Event: " + e.toString());
 		}
@@ -127,13 +135,13 @@ public class Client extends Service {
 	public boolean inTest(){
 		return testMode;
 	}
+	
 	public void vote(String vote) {
 		try {
-
 			Event e = new Event("VOTE");
 			e.put("vote", vote);
 			e.put("person", loggedOn);
-			connection.sendEvent(e);
+			sendEvent(e);
 
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -143,5 +151,25 @@ public class Client extends Service {
 	public void setPerson(Voter p)
 	{
 		loggedOn = p;
+	}
+	
+	public void requestTimedout()
+	{
+		clientUI.disableVoting();
+		displayError("Request timed out.");
+	}
+	
+	private void sendEvent(Event e) throws IOException
+	{
+		clientTimeout = new ClientTimeout(this);
+		clientTimeout.start();
+		connection.sendEvent(e);
+	}
+
+	public void setCandidates(ElectionCandidates Elec){
+		this.elec = Elec;
+	}
+	public ElectionCandidates getCandidates(){
+		return this.elec;
 	}
 }

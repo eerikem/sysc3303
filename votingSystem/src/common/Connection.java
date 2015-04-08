@@ -76,7 +76,12 @@ public class Connection implements Runnable, Serializable {
 				service.getThreadPool().execute(new Runnable() {
 					public void run() {
 						// System.out.println(Thread.currentThread().toString());
-						service.getReactor().dispatch(e);
+						try {
+							service.getReactor().dispatch(e);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				});
 			} catch (IOException e) {

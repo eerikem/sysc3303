@@ -14,7 +14,7 @@ public class RegisterResponseEventHandler implements EventHandler {
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
 		Client client = (Client) connection.getService();
-
+		client.clientTimeout.interrupt();
 		String response = (String) e.get("response");
 
 		switch (response) {

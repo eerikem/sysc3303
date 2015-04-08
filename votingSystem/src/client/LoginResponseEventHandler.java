@@ -15,7 +15,7 @@ public class LoginResponseEventHandler implements EventHandler {
 		// Get the connection that this Handler was called on
 		Connection connection = (Connection) e.get("connection");
 		Client client = (Client) connection.getService();
-
+		client.clientTimeout.interrupt();
 		String response = (String) e.get("response");
 
 		switch (response) {
@@ -42,6 +42,12 @@ public class LoginResponseEventHandler implements EventHandler {
 		case "district_mismatch":
 			Service.logInfo("Attempt to log into incorrect district");
 			break;
+		case "election_not_started":
+			Service.logInfo("Election has not started");
+			break;
+		case "election_ended":
+			Service.logInfo("Election has ended");
+			break;	
 		default:
 			Service.logWarn("Unknown Login Response: " + response);
 			break;
