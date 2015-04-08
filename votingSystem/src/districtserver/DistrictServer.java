@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import servercommon.Server;
+import voteserver.ElectionCandidates;
 import common.Connection;
 import common.Connector;
 import common.Voter;
@@ -21,6 +22,7 @@ public class DistrictServer extends Server {
 	private static String DEFAULT_HOST_MAIN = "localhost";
 	private Connector connector;
 	private Connection mainConnection;
+	private ElectionCandidates elec;
 	
 	protected DistrictTimeout districtTimeout;
 
@@ -65,6 +67,8 @@ public class DistrictServer extends Server {
 				Connection connection = acceptor.accept();
 				Thread t = new Thread(connection);
 				connections.put(connection.getDest(), connection);
+				Event a = new Event("ANNOUNCECANDIDATES");
+				connection.sendEvent(a);
 				t.start();
 			} catch (IOException e) {
 				Service.logError("Server Connection Error");
@@ -146,5 +150,13 @@ public class DistrictServer extends Server {
 		mainConnection.sendEvent(e);
 		districtTimeout = new DistrictTimeout();
 		districtTimeout.start();
+	}
+	
+	public ElectionCandidates getCandidates(){
+		return elec;
+	}
+
+	public void setCandidate(ElectionCandidates elec2) {
+		elec = elec2;
 	}
 }

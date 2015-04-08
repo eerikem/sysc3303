@@ -28,10 +28,12 @@ public class CandidateEventHandler implements EventHandler{
 		// Get the connection that this Handler was called on
 		ElectionCandidates elec = (ElectionCandidates) e.get("can");
 		//get the connections from the server 
+		Service.logError("Worked for startup");
 		ConcurrentHashMap<Address, Connection> connections = server.getConnections();
 		if (connections == null){
 			Service.logError("Not working");
 		}
+
 		else {
 			Service.logError("Size: "+ connections.size() );
 			for(Address key: connections.keySet()){
@@ -45,6 +47,7 @@ public class CandidateEventHandler implements EventHandler{
 		Event p = new Event("ANNOUNCECANDIDATES");
 		p.put("can", elec);
 		ArrayList<Candidate> n = elec.getCandidate();
+		server.setCandidate(elec);
 		System.out.println("Event Log: " + elec.log);
 		if (n == null){
 			System.out.println("ArrayList is Null");

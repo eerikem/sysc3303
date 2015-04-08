@@ -1,4 +1,4 @@
-package voteserver;
+package districtserver;
 
 import common.Event;
 import common.EventHandler;
@@ -10,6 +10,7 @@ import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
 import servercommon.Server;
+import voteserver.ElectionCandidates;
 import common.Address;
 import common.Connection;
 import common.Connector;
@@ -27,7 +28,7 @@ public class GetCandidateEventHandler implements EventHandler{
 		//get the connection from the event
 		Connection connection = (Connection) e.get("connection");
 		//get the parent server from that connections
-		MainServer server = (MainServer)connection.getService();
+		DistrictServer server = (DistrictServer)connection.getService();
 		// Get the connection that this Handler was called on
 		
 		ElectionCandidates elec = server.getCandidates();

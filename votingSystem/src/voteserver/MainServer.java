@@ -104,7 +104,6 @@ public class MainServer extends Server {
 		return null; //elec.parseLog();
 	}
 
-	
 	public void stopElection(){
 		votingEnabled = false;
 			
